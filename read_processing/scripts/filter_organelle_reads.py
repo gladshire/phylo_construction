@@ -35,7 +35,7 @@ def build_bt2_index(reference,num_cores,DIR):
 		and os.path.exists(DIR+index_4_bt2) \
 		and os.path.exists(DIR+index_rev_1_bt2) \
 		and os.path.exists(DIR+index_rev_2_bt2):
-		print "Found bowtie2 index for",file_ref 
+		print("Found bowtie2 index for",file_ref)
 	
 	else:
 		cmd = ["bowtie2-build",reference,(DIR+(base_name_ref[0])),"--threads",str(num_cores),"-q"]
@@ -82,7 +82,7 @@ def filter_organelle_pe(reference,pe_fq1,pe_fq2,num_cores,DIR):
 			and os.path.exists(DIR+organelle_filtered_reads_2) \
 			and os.path.exists(DIR+organelle_reads_1) \
 			and os.path.exists(DIR+organelle_reads_2):
-			print "Found bowtie2 organelle filtering files found for",(base_name_bowtie[0])
+			print("Found bowtie2 organelle filtering files found for",(base_name_bowtie[0]))
 	
 		else:
 			cmd = ["bowtie2","-x",(DIR+(base_name_ref[0])),"-1",pe_fq1,"-2",pe_fq2,"--very-sensitive-local","--threads",str(num_cores), \
@@ -108,7 +108,7 @@ def filter_organelle_pe(reference,pe_fq1,pe_fq2,num_cores,DIR):
 			and os.path.exists(DIR+organelle_filtered_reads_2) \
 			and os.path.exists(DIR+organelle_reads_1) \
 			and os.path.exists(DIR+organelle_reads_2):
-			print "Found bowtie2 organelle filtering files found for",(base_name_bowtie[0])
+			print("Found bowtie2 organelle filtering files found for",(base_name_bowtie[0]))
 	
 		else:
 			cmd = ["bowtie2","-x",(DIR+(base_name_ref[0])),"-1",pe_fq1,"-2",pe_fq2,"--very-sensitive-local","--threads",str(num_cores), \
@@ -144,7 +144,7 @@ def filter_organelle_se(reference,se_fq,num_cores,DIR):
 	
 		if os.path.exists(DIR+organelle_filtered_se_reads) \
 			and os.path.exists(DIR+organelle_reads_se):
-			print "Found bowtie2 organelle filtering files found for",(base_name_assert_se[0])
+			print("Found bowtie2 organelle filtering files found for",(base_name_assert_se[0]))
 	
 		else:
 			cmd = ["bowtie2","-x",(DIR+(base_name_ref[0])),"-U",se_fq,"--very-sensitive-local","--threads",str(num_cores), \
@@ -165,7 +165,7 @@ def filter_organelle_se(reference,se_fq,num_cores,DIR):
 	
 		if os.path.exists(DIR+organelle_filtered_se_reads) \
 			and os.path.exists(DIR+organelle_reads_se):
-			print "Found bowtie2 organelle filtering files found for",(base_name_assert_se[0])
+			print("Found bowtie2 organelle filtering files found for",(base_name_assert_se[0]))
 	
 		else:
 			cmd = ["bowtie2","-x",(DIR+(base_name_ref[0])),"-U",se_fq,"--very-sensitive-local","--threads",str(num_cores), \

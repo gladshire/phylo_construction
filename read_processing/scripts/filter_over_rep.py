@@ -7,12 +7,12 @@ It has code from  RemoveFastqcOverrepSequenceReads.py from adam h freedman
 import sys, os
 import gzip
 import re
-from itertools import izip,izip_longest
+from itertools import zip_longest
 
 
 def grouper(iterable,fillvalue=None): #Break data into fixed-length chunks or blocks to parse fq in 4 lines at a time
     args = [iter(iterable)] * 4
-    return izip_longest(fillvalue=fillvalue, *args) 
+    return zip_longest(fillvalue=fillvalue, *args) 
 
 
 def ParseFastqcLog(fastqclog):  #Parse the fastqc_data.txt, find and returns the over-represented sequences
@@ -25,7 +25,7 @@ def seqsmatch(overreplist,read):
     flag=False
     if overreplist!=[]:
         for seq in overreplist:
-            if seq in read:
+            if seq in read.decode("utf-8"):
                 flag=True
                 break
     return flag
@@ -81,16 +81,16 @@ def filter_overep_pe(pe_fq1,pe_fq2,pe_fqc1,pe_fqc2,DIR):
 				if counter%100000==0:
 					print ("%s reads processed" % counter)
     	
-		    	    	head1,seq1,placeholder1,qual1=[i.strip() for i in entry]
-    			    	head2,seq2,placeholder2,qual2=[j.strip() for j in R2.next()]
+				head1,seq1,placeholder1,qual1=[i.strip() for i in entry]
+				head2,seq2,placeholder2,qual2=[j.strip() for j in R2.next()]
     	    	
-    	   		 	flagleft,flagright=seqsmatch(leftseqs,seq1),seqsmatch(rightseqs,seq2)
+				flagleft,flagright=seqsmatch(leftseqs,seq1),seqsmatch(rightseqs,seq2)
 	    	    	
-    	    			if True not in (flagleft,flagright):
-    	    				fq1out.write('%s\n' % '\n'.join([head1,seq1,'+',qual1]))
-	            			fq2out.write('%s\n' % '\n'.join([head2,seq2,'+',qual2]))
-	            		else:
-	            			failcounter+=1
+				if True not in (flagleft,flagright):
+					fq1out.write(b'%s\n' % b'\n'.join([head1,seq1,b'+',qual1]))
+					fq2out.write(b'%s\n' % b'\n'.join([head2,seq2,b'+',qual2]))
+				else:
+					failcounter+=1
 	
 			print ('total PE reads = %s' % counter)
 			print ('retained PE reads = %s' % (counter-failcounter))
@@ -143,18 +143,18 @@ def filter_overep_se(se_fq,se_fqc,DIR):
 		with sein as f1:
 			R1=grouper(f1)
 			for entry in R1:	
-		    		counter+=1
-		        	if counter%100000==0:
-		        		print ("%s reads processed" % counter)
+				counter+=1
+				if counter%100000==0:
+					print ("%s reads processed" % counter)
 		    	
-		    		head1,seq1,placeholder1,qual1=[i.strip() for i in entry]
+				head1,seq1,placeholder1,qual1=[i.strip() for i in entry]
 		        
-		        	se_flag=seqsmatch(se_seqs,seq1),
+				se_flag=seqsmatch(se_seqs,seq1),
 		        
-		        	if True not in (se_flag):
-		            		seout.write('%s\n' % '\n'.join([head1,seq1,'+',qual1]))
-		        	else:
-		            		failcounter+=1
+				if True not in (se_flag):
+					seout.write(b'%s\n' % b'\n'.join([head1,seq1,b'+',qual1]))
+				else:
+					failcounter+=1
 	
 	
 			print ('total SE reads = %s' % counter)

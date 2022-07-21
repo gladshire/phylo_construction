@@ -8,12 +8,12 @@ It has code from  FilterUncorrectabledPEfastq.py from adam h freedman
 """
 import sys, os
 import gzip       
-from itertools import izip, izip_longest
+from itertools import zip_longest
 
 
 def grouper(iterable, n, fillvalue=None): #Break data into fixed-length chunks or blocks to parse fq in 4 lines at a time
     args = [iter(iterable)] * n
-    return izip_longest(fillvalue=fillvalue, *args) 
+    return zip_longest(fillvalue=fillvalue, *args) 
 
 def filter_unfix_pe(pe_fq1,pe_fq2,DIR):
 
@@ -68,20 +68,20 @@ def filter_unfix_pe(pe_fq1,pe_fq2,DIR):
 		        head1,seq1,placeholder1,qual1=[i.strip() for i in entry]
 		        head2,seq2,placeholder2,qual2=[j.strip() for j in R2.next()]
 		        
-		        if 'unfixable' in head1 or 'unfixable' in head2:
+		        if b'unfixable' in head1 or b'unfixable' in head2:
 		            unfix_count+=1
 		        else:
-		            if 'cor' in head1:
+		            if b'cor' in head1:
 		                r1_cor_count+=1
-		            if 'cor' in head2:
+		            if b'cor' in head2:
 		                r2_cor_count+=1
-		            if 'cor' in head1 or 'cor' in head2:
+		            if b'cor' in head1 or b'cor' in head2:
 		                pair_cor_count+=1
 		            
-		            head1=head1.split('l:')[0][:-1] # keeps label information before the Rcorrector flags (low kmer stat, 'cor' and 'unfixable error')
-		            head2=head2.split('l:')[0][:-1] 
-		            fq1out.write('%s\n' % '\n'.join([head1,seq1,placeholder1,qual1]))
-		            fq2out.write('%s\n' % '\n'.join([head2,seq2,placeholder2,qual2]))
+		            head1=head1.decode("utf-8").split('l:')[0][:-1].encode("utf-8")
+		            head2=head2.decode("utf-8").split('l:')[0][:-1].encode("utf_8")
+		            fq1out.write(b'%s\n' % b'\n'.join([head1,seq1,placeholder1,qual1]))
+		            fq2out.write(b'%s\n' % b'\n'.join([head2,seq2,placeholder2,qual2]))
 		
 		
 		log_base_name = pe_fq1_name.split( "_" )
@@ -140,14 +140,14 @@ def filter_unfix_se(se_fq,DIR):
 		    
 		        head,seq,placeholder,qual=[i.strip() for i in entry]
 		        
-		        if 'unfixable' in head:
+		        if b'unfixable' in head:
 		            unfix_count+=1
 		        else:
-		            if 'cor' in head:
+		            if b'cor' in head:
 		                se_cor_count+=1
 		
-		            head=head.split('l:')[0][:-1] # keeps label information before the Rcorrector flags (low kmer stat, 'cor' and 'unfixable error')
-		            seout.write('%s\n' % '\n'.join([head,seq,placeholder,qual]))
+		            head=head.decode("utf-8").split('l:')[0][:-1].encode("utf-8")
+		            seout.write(b'%s\n' % b'\n'.join([head,seq,placeholder,qual]))
 		
 		log_base_name = se_fq_name.split( "_" )
 		unfix_log=open((DIR+(log_base_name[0])+'_fix_se.log'),'w')

@@ -7,9 +7,9 @@ Change paths as needed
 
 import sys,os
 
-APPS_HOME = "~/miles" # where Trimmomatic is located
-TRIMMOMATIC_CMD = 'java -jar '+APPS_HOME+"/Trimmomatic-0.36/trimmomatic-0.36.jar" # Basic command to call Trimmomatic
-TruSeq_ADAPTER = os.path.expanduser("~/Desktop/botany_2018/databases/TruSeq_adapters.fa") # User provided adapters
+APPS_HOME = "~/miles/packages" # where Trimmomatic is located
+TRIMMOMATIC_CMD = 'java -jar '+APPS_HOME+"/Trimmomatic-0.39/dist/jar/trimmomatic-0.39.jar" # Basic command to call Trimmomatic
+TruSeq_ADAPTER = os.path.expanduser("~/miles/packages/phylogenomic_dataset_construction/databases/TruSeq_adapters.fa") # User provided adapters
 
 def trimmomatic_pe(pe_fq1,pe_fq2,num_cores,DIR):
 	
@@ -57,7 +57,7 @@ def trimmomatic_pe(pe_fq1,pe_fq2,num_cores,DIR):
 		and os.path.exists(DIR+trimmed_up2):
 		print ("Found", trimmed_pe1, trimmed_up1, trimmed_pe2, trimmed_up2)
 	else:
-		cmd = [TRIMMOMATIC_CMD,"PE","-threads",str(num_cores), \
+		cmd = [TRIMMOMATIC_CMD,"PE","-phred33","-threads",str(num_cores), \
 				pe_fq1,pe_fq2, \
 				DIR+trimmed_pe1, \
 				DIR+trimmed_up1, \
@@ -99,7 +99,7 @@ def trimmomatic_se(se_fq,num_cores,DIR):
 	if os.path.exists(DIR+trimmed_se):
 		print ("Found", trimmed_se)
 	else:
-		cmd = [TRIMMOMATIC_CMD,"SE","-threads",str(num_cores), \
+		cmd = [TRIMMOMATIC_CMD,"SE","-phred33","-threads",str(num_cores), \
 				se_fq, \
 				DIR+trimmed_se, \
 				trim_setting]

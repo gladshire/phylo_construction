@@ -9,11 +9,6 @@ def fastQC_pe(pe_fq1,pe_fq2,num_cores,DIR):
 	if os.path.isabs(DIR) == False: DIR = os.path.abspath(DIR)
 	if DIR[-1] != "/": DIR += "/"
 
-	#path_pe_1, file_pe_1 = (os.path.split(pe_fq1)) #splits the path from the file name
-	#path_pe_2, file_pe_2 = (os.path.split(pe_fq2))
-	#fqc_html_1 = (os.path.splitext(file_pe_1)[0])+".fastqc.html" 
-	#fqc_html_2 = (os.path.splitext(file_pe_2)[0])+".fastqc.html" 
-
 	path_pe_1, file_pe_1 = os.path.split(pe_fq1)
 	pe_fq1_name = str(file_pe_1)
 	base_name_pe_1 = pe_fq1_name.split( "." )
