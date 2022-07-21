@@ -1,7 +1,15 @@
+*.fastq	
+*.fq
+*.fasta
+*.fa
+*.bt2
+*.sam
+*.bam
+*.gene_trans_map
+*.log
+*.gz
+*.zip
+*.html
+04-fastqc/
+__pycache__/
 
-~/miles/allele_phasing/phylo_construction/read_processing/00-raw_rnaseq_data/
-~/miles/allele_phasing/phylo_construction/read_processing/01-rcorrector/
-~/miles/allele_phasing/phylo_construction/read_processing/02-trimmomatic/
-~/miles/allele_phasing/phylo_construction/read_processing/03-organelle_filtered/
-~/miles/allele_phasing/phylo_construction/read_processing/04-fastqc/
-~/miles/allele_phasing/phylo_construction/read_processing/05-over_rep_filtered/
