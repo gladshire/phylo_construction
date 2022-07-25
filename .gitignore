@@ -11,6 +11,8 @@
 *.zip
 *.html
 *.report
+*.png
+00-raw_rnaseq_data/
 04-fastqc/
 __pycache__/
 

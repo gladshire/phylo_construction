@@ -12,10 +12,14 @@ from itertools import zip_longest
 from os.path import exists
 
 KRAKEN2_LOC = "~/miles/packages/kraken2/"
+FILT_LIST = ["bacteria", "archaea", "fungi", "viral", "mitochondrion_and_plastid"]
 
 
 def filter_summary(filt_list, in_file, out_dir):
-    if out_dir == ".": out_dir = os.getcwd() + "/"
+    if out_dir == ".": out_dir = os.getcwd()
+    if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
+    if out_dir[-1] != "/": out_dir += "/"
+
     print("\nKraken2 filtering complete!")
     print("SUMMARY:")
     total_reads_removed = 0
@@ -53,7 +57,10 @@ def filter_summary(filt_list, in_file, out_dir):
      
         
 def gzip_filtered(out_dir, filtered_file, threads):
-    if out_dir == ".": out_dir = os.getcwd() + "/"
+    if out_dir == ".": out_dir = os.getcwd()
+    if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
+    if out_dir[-1] != "/": out_dir += "/"
+
     file_name = out_dir + filtered_file.split("/")[-1].split(".")[0] + ".filt.fq"
     print("Compressing filtered file...")
     os.system("pigz -p" + str(threads) + " " + file_name)
@@ -64,12 +71,13 @@ def grouper(iterable, n, fillvalue=None):
     return zip_longest(fillvalue = fillvalue, *args)
 
 
-def kraken_filter_se(db, in_file, threads, out_dir, confidence=None):
-    if out_dir == ".": out_dir = os.getcwd() + "/" 
-    
+def kraken_filter_se(db, in_file, threads, out_dir, confidence=0.2):
+    if out_dir == ".": out_dir = os.getcwd()
+    if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
+    if out_dir[-1] != "/": out_dir += "/"
+
     if exists(out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq"):
         in_file = out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq"
-    #out_file = in_file.split("/")[-1].split(".")[0] + ".filt.fq"
     out_file = "temp.fq"
     cmd = [KRAKEN2_LOC + "kraken2", "--threads", str(threads), "--unclassified-out",
            out_dir + out_file, "--db", db, in_file, "--output", "-", "--report",
@@ -88,9 +96,11 @@ def kraken_filter_se(db, in_file, threads, out_dir, confidence=None):
     os.rename(out_dir + "temp.fq", out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq")
     
 
-def kraken_filter_pe(db, in_file1, in_file2, threads, out_dir, confidence=None):
-    if out_dir == ".": out_dir = os.getcwd() + "/"
-    
+def kraken_filter_pe(db, in_file1, in_file2, threads, out_dir, confidence=0.2):
+    if out_dir == ".": out_dir = os.getcwd()
+    if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
+    if out_dir[-1] != "/": out_dir += "/"
+
     if exists(out_dir + in_file1.split("/")[-1].split(".")[0] + ".filt.fq"):
         in_file = out_dir + in_file1.split("/")[-1].split(".")[0] + ".filt.fq"
     out_file = "temp.fq"
@@ -108,57 +118,29 @@ def kraken_filter_pe(db, in_file1, in_file2, threads, out_dir, confidence=None):
         cmd.append("--memory-mapping")
 
     os.system(" ".join(cmd))
+    os.rename(out_dir + "temp.fq", out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq")
 
-"""
-def kraken_filter_se(filter_file, seq_file, out_dir):
-    
-    out_filt_name = seq_file.split(".")[0] + ".filt.fq"
-    
-    seq_in = open(seq_file, 'rb')
-    seq_out = open(out_dir + out_filt_name, 'wb')
-    
-    filt_file = open(filter_file)
-    iter_seqs = grouper(seq_in, 4)
-    filt_ct = 0
-    for line_num, line in enumerate(filt_file):
-        
-        print(iter_seqs[i])
-        head,seq,placeholder,qual = [i.strip() for i in iter_seqs[line_num]]
-        if line.split()[0] == "C":
-            filt_ct += 1
-        else:
-            seq_out.write(b'%s\n' % b'\n'.join([head,seq,placeholder,qual]))
 
-    seq_in.close()
-    seq_out.close()
-    filt_file.close()
 
-    if seq_file.split(".")[-1] == "gz":
-        os.system("gzip " + out_dir + out_filt_name)
-    
-    print("Kraken2 filter complete!")
-    print("\nSummary:\n")
-    print("Reads processed: " + str(line))
-    print("Reads removed:   " + str(filt_ct))
-"""
 
 if __name__ == "__main__":
-    filt_list = ["bacteria", "archaea", "fungi", "viral", "mitochondrion_and_plastid"]
     if len(sys.argv) == 4:
-        for i in filt_list:
+        for i in FILT_LIST:
             kraken_filter_se(db = "/scratch/kraken2_dbs/" + i,
                              in_file = sys.argv[1],
                              threads = sys.argv[2],
                              out_dir = sys.argv[3])
-        gzip_filtered(out_dir = sys.argv[3], filtered_file = sys.argv[1], threads = sys.argv[2])
-        filter_summary(filt_list, in_file = sys.argv[1], out_dir = sys.argv[3])
+        filter_summary(FILT_LIST, in_file = sys.argv[1], out_dir = sys.argv[3])
     elif len(sys.argv) == 5:
-        for i in filt_list:
+        for i in FILT_LIST:
             kraken_filter_pe(db = "/scratch/kraken2_dbs/" + i,
-                             in_file = sys.argv[1],
-                             threads = sys.argv[2],
-                             out_dir = sys.argv[3])
-        filter_summary(filt_list, in_file = sys.argv[1], out_dir = sys.argv[3])
+                             in_file1 = sys.argv[1],
+                             in_file2 = sys.argv[2],
+                             threads = sys.argv[3],
+                             out_dir = sys.argv[4])
+        filter_summary(FILT_LIST, in_file = sys.argv[1], out_dir = sys.argv[3])
     else:
         print("Usage:")
+        print("For single-end reads: python3 filter_seqs.py fq_file threads output_directory")
+        print("For paired-end reads: python3 filter_seqs.py fq_file1 fq_file2 threads output_directory")
         print("python3 filter_seqs.py in_file threads out_dir")
