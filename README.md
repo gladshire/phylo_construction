@@ -1,1 +1,1 @@
-# phylo_construction
+# Transcriptome assembly pipeline
