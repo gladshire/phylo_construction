@@ -3,7 +3,6 @@ import os
 import re
 import time
 
-
 def parse_fastqc_log(fastqc_log):
     with open(fastqc_log) as fp:
         for result in re.findall("Overrepresented sequences(.*?)END_MODULE", fp.read(), re.S):
@@ -20,10 +19,10 @@ def seqs_match(overrep_list, read):
     return flag
 
 def overrep_summary(tot_rds_ct, tot_fail_ct):
-    print("SUMMARY:")
+    print("SUMMARY:                    \n")
     print("  Total reads processed: {}".format(tot_rds_ct))
     print("  Reads retained: {}".format(tot_rds_ct - tot_fail_ct))
-    print("  Reads removed: {}".format(tot_fail_ct))
+    print("  Reads removed: {}\n".format(tot_fail_ct))
 
 def filter_overrep_pe(pe_fq1, pe_fq2, pe_fqc1, pe_fqc2, out_dir):
     if out_dir == ".": out_dir = os.getcwd()
@@ -106,7 +105,7 @@ def filter_overrep_se(se_fq, se_fqc, out_dir):
     tot_fail_ct = 0
     line_num = 0
 
-    print("Initiating removal of over-represented reads")
+    print("Initiating removal of over-represented reads...")
     with sein as f1:
         head = f1.readline()
         while head:

@@ -1,5 +1,6 @@
 import sys
 import os
+import subprocess
 
 def fastQC_pe(pe_fq1, pe_fq2, threads, out_dir):
     if out_dir == ".": out_dir = os.getcwd()
@@ -16,7 +17,7 @@ def fastQC_pe(pe_fq1, pe_fq2, threads, out_dir):
 
     cmd = ["fastqc", pe_fq1, pe_fq2, "-t", str(threads), "-o", out_dir, "--extract"]
     print(" ".join(cmd))
-    os.system(" ".join(cmd))
+    subprocess.run(" ".join(cmd), shell=True)
 
 def fastQC_se(se_fq, threads, out_dir):
     if out_dir == ".": out_dir = os.getcwd()
@@ -29,7 +30,7 @@ def fastQC_se(se_fq, threads, out_dir):
     
     cmd = ["fastqc", se_fq, "-t", str(threads), "-o", out_dir, "--extract"]
     print(" ".join(cmd))
-    os.system(" ".join(cmd))
+    subprocess.run(" ".join(cmd), shell=True)
 
 
 if __name__ == "__main__":

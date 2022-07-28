@@ -1,0 +1,10 @@
+PASS	Basic Statistics	SRR364263.filt.fq
+PASS	Per base sequence quality	SRR364263.filt.fq
+PASS	Per sequence quality scores	SRR364263.filt.fq
+WARN	Per base sequence content	SRR364263.filt.fq
+PASS	Per sequence GC content	SRR364263.filt.fq
+PASS	Per base N content	SRR364263.filt.fq
+WARN	Sequence Length Distribution	SRR364263.filt.fq
+FAIL	Sequence Duplication Levels	SRR364263.filt.fq
+WARN	Overrepresented sequences	SRR364263.filt.fq
+PASS	Adapter Content	SRR364263.filt.fq

@@ -7,6 +7,7 @@ import psutil
 import shutil
 import gzip
 from time import sleep
+import subprocess
 
 from itertools import zip_longest
 from os.path import exists
@@ -21,7 +22,7 @@ def filter_summary(filt_list, in_file, out_dir):
     if out_dir[-1] != "/": out_dir += "/"
 
     print("\nKraken2 filtering complete!")
-    print("SUMMARY:")
+    print("SUMMARY:\n")
     total_reads_removed = 0
     total_percent_removed = 0
     for i in filt_list:
@@ -35,25 +36,25 @@ def filter_summary(filt_list, in_file, out_dir):
             total_reads = int(lines[0].strip().split()[1]) + int(lines[1].strip().split()[1])
         for line in lines:
             if "Bacteria" in line:
-                print("    Bacterial reads: " + str(reads_removed) + " (" + str(percent_removed) + "%)")
+                print("  Bacterial reads: " + str(reads_removed) + " (" + str(percent_removed) + "%)")
                 break
             elif "Fungi" in line:
-                print("    Fungal reads: " + str(reads_removed) + " (" + str(percent_removed) + "%)")
+                print("  Fungal reads: " + str(reads_removed) + " (" + str(percent_removed) + "%)")
                 break
             elif "Archaea" in line:
-                print("    Archaeal reads: " + str(reads_removed) + " (" + str(percent_removed) + "%)")
+                print("  Archaeal reads: " + str(reads_removed) + " (" + str(percent_removed) + "%)")
                 break
             elif "Viruses" in line:
-                print("    Viral reads removed: " + str(reads_removed) + " (" + str(percent_removed) + "%)")
+                print("  Viral reads removed: " + str(reads_removed) + " (" + str(percent_removed) + "%)")
                 break
             elif "plant" in line:
-                print("    Mitochondrial/Plastid reads: " + str(reads_removed) + " (" + str(percent_removed) + "%)")
+                print("  Mitochondrial/Plastid reads: " + str(reads_removed) + " (" + str(percent_removed) + "%)")
                 break
             else:
                 continue
 
-    print("\n    Total reads removed: " + str(total_reads_removed) + " (" + str(round(total_percent_removed, 2)) + "%)")
-    print("    Leaving " + str(total_reads) + " (" + str(round(100.0 - total_percent_removed, 2)) + ") reads")
+    print("\n  Total reads removed: " + str(total_reads_removed) + " (" + str(round(total_percent_removed, 2)) + "%)")
+    print("  Leaving " + str(total_reads - total_reads_removed) + " (" + str(round(100.0 - total_percent_removed, 2)) + ") reads\n")
      
         
 def gzip_filtered(out_dir, filtered_file, threads):
@@ -63,7 +64,7 @@ def gzip_filtered(out_dir, filtered_file, threads):
 
     file_name = out_dir + filtered_file.split("/")[-1].split(".")[0] + ".filt.fq"
     print("Compressing filtered file...")
-    os.system("pigz -p" + str(threads) + " " + file_name)
+    subprocess.run(["pigz", "-p" + str(threads), file_name], shell=True)
         
 
 def grouper(iterable, n, fillvalue=None):
@@ -92,7 +93,7 @@ def kraken_filter_se(db, in_file, threads, out_dir, confidence=0.2):
         print("Switching to slower memory-mapping mode...")
         cmd.append("--memory-mapping")
     
-    os.system(" ".join(cmd))
+    subprocess.run(" ".join(cmd), shell=True)
     os.rename(out_dir + "temp.fq", out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq")
     
 
@@ -117,7 +118,7 @@ def kraken_filter_pe(db, in_file1, in_file2, threads, out_dir, confidence=0.2):
         print("Switching to slower memory-mapping mode...")
         cmd.append("--memory-mapping")
 
-    os.system(" ".join(cmd))
+    subprocess.run(" ".join(cmd), shell=True)
     os.rename(out_dir + "temp.fq", out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq")
 
 

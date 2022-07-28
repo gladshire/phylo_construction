@@ -1,6 +1,6 @@
-
-import sys
 import os
+import sys
+import subprocess
 
 RCORRECTOR_LOC = "~/miles/packages/rcorrector"
 RCORRECTOR_CMD = "perl " + RCORRECTOR_LOC + "/run_rcorrector.pl "
@@ -16,7 +16,7 @@ def rcorrector_se(se_fq, threads, out_dir):
 
     cmd = [RCORRECTOR_CMD, "-s", se_fq, "-t", str(threads), "-od", out_dir]
     print(" ".join(cmd))
-    os.system(" ".join(cmd))
+    subprocess.run(" ".join(cmd), shell=True)
 
 def rcorrector_pe(pe_fq1, pe_fq2, threads, out_dir):
     if out_dir == ".": out_dir = os.getcwd()
@@ -34,7 +34,7 @@ def rcorrector_pe(pe_fq1, pe_fq2, threads, out_dir):
 
     cmd = [RCORRECTOR_CMD, "-1", pe_fq1, "-2", pe_fq2, "-t", str(threads), "-od", out_dir]
     print(" ".join(cmd))
-    os.system(" ".join(cmd))
+    subprocess.run(" ".join(cmd), shell=True)
 
 
 if __name__ == "__main__":

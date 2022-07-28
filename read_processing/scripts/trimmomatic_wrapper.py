@@ -1,5 +1,6 @@
 import sys
 import os
+import subprocess
 
 TRIMMOMATIC_LOC = "~/miles/packages/Trimmomatic-0.39"
 TRIMMOMATIC_CMD = "java -jar " + TRIMMOMATIC_LOC + "/dist/jar/trimmomatic-0.39.jar"
@@ -30,7 +31,7 @@ def trimmomatic_pe(pe_fq1, pe_fq2, threads, out_dir):
            out_dir + base_name_up_2,
            trim_setting]
     print(" ".join(cmd))
-    os.system(" ".join(cmd))
+    subprocess.run(" ".join(cmd), shell=True)
 
 def trimmomatic_se(se_fq, threads, out_dir):
     trim_setting = "ILLUMINACLIP:" + TRUSEQ_ADAPTER + ":2:30:10 SLIDINGWINDOW:4:5 LEADING:5 TRAILING:5 MINLEN:25"
@@ -48,7 +49,7 @@ def trimmomatic_se(se_fq, threads, out_dir):
            out_dir + base_name_se,
            trim_setting]
     print(" ".join(cmd))
-    os.system(" ".join(cmd))
+    subprocess.run(" ".join(cmd), shell=True)
 
 
 if __name__ == "__main__":

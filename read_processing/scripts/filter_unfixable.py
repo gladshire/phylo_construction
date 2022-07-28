@@ -27,7 +27,6 @@ def filter_unfix_se(se_fq, out_dir):
     tot_rds_ct = 0
     line_ct = 0
     
-    print("Initiating removal of unfixable reads...")
     with se_in as se:
         line = se.readline()
         while line:

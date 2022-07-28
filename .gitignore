@@ -1,7 +1,8 @@
-*.fastq	
+*.fastq
 *.fq
 *.fasta
 *.fa
+*.sra
 *.bt2
 *.sam
 *.bam
