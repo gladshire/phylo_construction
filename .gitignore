@@ -13,7 +13,14 @@
 *.html
 *.report
 *.png
+*.blastx
+*.cut
+*.info
+*.phr
+*.pin
+*.psq
 00-raw_rnaseq_data/
-04-fastqc/
+04-quality_control/
+05-filter_over_represented/
 __pycache__/
 

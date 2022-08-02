@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+import shutil
 import rcorrector_wrapper
 import filter_unfixable
 import trimmomatic_wrapper
@@ -29,6 +30,8 @@ def read_process_se(se_fq, threads, out_dir=None, remove_inter=False):
         out_dir_inter[3] = "04-quality_control"
         out_dir_inter[4] = "05-filter_over_represented"
         for d in out_dir_inter:
+            if os.path.exists(d):
+                shutil.rmtree(d)
             os.mkdir(out_dir + d)
     os.mkdir(out_dir + "processed_reads")
 

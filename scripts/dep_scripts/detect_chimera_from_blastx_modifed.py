@@ -114,9 +114,9 @@ if __name__ == "__main__":
 	blastx_name = str(file_blastx)
 	blastx_base_name = blastx_name.split( "." )
 
-	infile = open(blastx_output,"rU")
+	infile = open(blastx_output,"r")
 	outfile1 = open(DIR+blastx_base_name[0]+".cut","w")
-	outfile2 = open(DIR+blastx_base_name[0]+".info","w")
+	outfile2 = open(DIR+blastx_bse_name[0]+".info","w")
 	last_query = ""
 		
 	
