@@ -33,7 +33,6 @@ def read_process_se(se_fq, threads, out_dir=None, remove_inter=False):
             if os.path.exists(d):
                 shutil.rmtree(d)
             os.mkdir(out_dir + d)
-    os.mkdir(out_dir + "processed_reads")
 
     path_se, file_se = os.path.split(se_fq)
     se_fq_name = str(file_se)

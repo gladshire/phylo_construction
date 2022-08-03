@@ -60,7 +60,7 @@ def get_sra_data(sra_list, threads, out_dir_prefetch, out_dir_fastq):
     for sra in sra_list:
         taxon_id = get_tax_id(sra)
         organism = get_org(sra)
-        out_file = taxon_id + "_" + organism.lower().replace(" ", "_") + ".fastq"
+        out_file = sra + "_" + taxon_id + "_" + organism.lower().replace(" ", "_") + ".fastq"
 
         print("Downloading: " + organism + " (" + taxon_id + ")" + " ...")
         prefetch_cmd = [SRA_TOOLKIT_BIN_PATH + "prefetch", sra,

@@ -29,7 +29,7 @@ def trinity_pe(pe_fq1, pe_fq2, threads, max_memory_gb, strand, out_dir):
 def trinity_se(se_fq, threads, max_memory_gb, strand, out_dir):
     if out_dir == ".": out_dir = os.getcwd()
     if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
-    if out_dir[-1] != ".": out_dir += "/"
+    if out_dir[-1] != "/": out_dir += "/"
 
     assembly_file = se_fq.split(".")[0] + ".Trinity.fasta"
 
