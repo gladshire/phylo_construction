@@ -19,6 +19,7 @@
 *.phr
 *.pin
 *.psq
+*.bc
 00-raw_rnaseq_data/
 04-quality_control/
 05-filter_over_represented/

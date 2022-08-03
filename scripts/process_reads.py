@@ -37,15 +37,38 @@ def get_layout(file_sra):
     return layout
 
 
-def process_fastq_dumps(fastq_dir, threads):
+def process_fastq_dumps(fastq_dir, out_dir, threads):
+    file_skip = []
+    out_dir_inter = [None] * 5 
+    out_dir_inter[0] = "01-error_correction"
+    out_dir_inter[1] = "02-filter_adapter_seq"
+    out_dir_inter[2] = "03-filter_foreign_dna"
+    out_dir_inter[3] = "04-quality_control"
+    out_dir_inter[4] = "05-filter_over_represented"
+    for d in out_dir_inter:
+        if os.path.exists(d):
+            shutil.rmtree(d)
+        os.mkdir(out_dir + d)
+
     for filename in os.listdir(fastq_dir):
+        if filename in file_skip:
+            continue
         file_sra = filename.split("_")[0]
         layout = get_layout(file_sra)
         if layout == "SINGLE":
+            continue
             read_process.read_process_se(fastq_dir + filename, str(threads))
         elif layout == "PAIRED":
-            filename1 = fastq_dir + filename[:-1:] + "1"
-            filename2 = fastq_dir + filename[:-1:] + "2"
+            file_base = filename.split(".")[0]
+            filename1 = fastq_dir + file_base[:-1:] + "1" + ".fastq"
+            filename2 = fastq_dir + file_base[:-1:] + "2" + ".fastq"
+            if file_base[-1] == "1":
+                file_skip.append(file_base[:-1:] + "2" + ".fastq")
+            elif file_base[-1] == "2":
+                file_skip.append(file_base[:-1:] + "1" + ".fastq")
+            else:
+                print("This should not happen")
+                sys.exit()
             read_process.read_process_pe(filename1, filename2, str(threads))
         else:
             print("This should not happen")
@@ -63,7 +86,7 @@ if __name__ == "__main__":
         dnld_sra_data(threads, out_dir)
 
         # Perform read processing on all SRA fastq files
-        process_fastq_dumps(out_dir + "00-raw_seq_data/fasterq_dump/", threads)
+        process_fastq_dumps(out_dir + "00-raw_seq_data/fasterq_dump/", out_dir, threads)
  
     else:
         print("Usage:")

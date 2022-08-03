@@ -18,8 +18,7 @@ def read_process_se(se_fq, threads, out_dir=None, remove_inter=False):
         if out_dir[-1] != "/": out_dir += "/"
     else:
         out_dir = os.path.abspath(os.path.dirname(__file__)) + "/"
-   
-    # If intermediate files not removed, store them in folders step-wise
+
     out_dir_inter = [None] * 5
     for d in out_dir_inter:
         d = ""
@@ -29,11 +28,7 @@ def read_process_se(se_fq, threads, out_dir=None, remove_inter=False):
         out_dir_inter[2] = "03-filter_foreign_dna"
         out_dir_inter[3] = "04-quality_control"
         out_dir_inter[4] = "05-filter_over_represented"
-        for d in out_dir_inter:
-            if os.path.exists(d):
-                shutil.rmtree(d)
-            os.mkdir(out_dir + d)
-
+   
     path_se, file_se = os.path.split(se_fq)
     se_fq_name = str(file_se)
     base_name_se = se_fq_name.split(".")[0]
@@ -78,8 +73,6 @@ def read_process_pe(pe_fq1, pe_fq2, threads, out_dir=None, remove_inter=False):
     else:
         out_dir = os.path.abspath(os.path.dirname(__file__)) + "/"
 
-
-    # If intermediate files not removed, store them in folders step-wise
     out_dir_inter = [None] * 5
     for d in out_dir_inter:
         d = ""
@@ -89,9 +82,6 @@ def read_process_pe(pe_fq1, pe_fq2, threads, out_dir=None, remove_inter=False):
         out_dir_inter[2] = "03-filter_foreign_dna"
         out_dir_inter[3] = "04-quality_control"
         out_dir_inter[4] = "05-filter_over_represented"
-        for d in out_dir_inter:
-            os.mkdir(out_dir + d)
-    os.mkdir(out_dir + "processed_reads")
 
     path_pe_1, file_pe_1 = os.path.split(pe_fq1)
     pe_fq1_name = str(file_pe_1)

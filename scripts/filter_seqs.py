@@ -54,7 +54,7 @@ def filter_summary(filt_list, in_file, out_dir):
                 continue
 
     print("\n  Total reads removed: " + str(total_reads_removed) + " (" + str(round(total_percent_removed, 2)) + "%)")
-    print("  Leaving " + str(total_reads - total_reads_removed) + " (" + str(round(100.0 - total_percent_removed, 2)) + ") reads\n")
+    print("  Leaving: " + str(total_reads - total_reads_removed) + " (" + str(round(100.0 - total_percent_removed, 2)) + "%) reads\n")
      
         
 def gzip_filtered(out_dir, filtered_file, threads):
