@@ -58,9 +58,17 @@ Specify the SRA numbers for each run to be retrieved and processed by the pipeli
 ```
 python3 process_reads.py num_threads
 ```
-This script will perform all the above-listed processing steps on all SRA runs specified in the **sras.txt** file. Once completed, the processed transcript files can be found in the **"05-filter_over_represented"** folder in the current working directory.
+This will perform all the above-listed processing steps on all SRA runs specified in the **sras.txt** file. Once completed, the processed transcript files can be found in the **"05-filter_over_represented"** folder in the current working directory.
 
 ### 2. Assembly with Trinity <a name="trinity"></a>
+
+Following initial processing of the reads, Trinity will be used to generate *de novo* transcriptomes for each SRA run. This process is handled by the **assemble_reads.py** script, which takes as its arguments the number of threads and the maximum amount of RAM (in gigabytes) that may be dedicated towards the Trinity assemblies. To perform this step, simply run the script:
+```
+python3 assemble_reads.py num_threads max_memory_GB
+```
+This will initiate Trinity assembly for all processed transcripts in series. Note that this step can be quite time consuming, depending on the size of the dataset in question, and will likely be the longest step in the pipeline's total runtime.
+
+Once complete, all output assemblies can be found in the **"06-trinity_assembly"** folder in the current working directory.
 
 ### 3. Transcript filtering and translation <a name="filt_trans"></a>
 
