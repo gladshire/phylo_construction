@@ -19,6 +19,10 @@ def filter_unfix_se(se_fq, out_dir):
 
     filt_name = file_name.split(".")[0] + ".fix.fq"
     
+    if os.path.exists(out_dir + filt_name):
+        print("Filtered file found for: " + se_fq)
+        return
+ 
     se_in = open(se_fq, 'r')
     se_out = open(out_dir + filt_name, 'w')
     
@@ -52,11 +56,18 @@ def filter_unfix_pe(pe_fq1, pe_fq2, out_dir):
     
     path_pe_1, file_pe_1 = os.path.split(pe_fq1)
     file_name_1 = str(file_pe_1)
-    filt_name = file_name_1.split(".")[0] + ".fix.fq"
+    filt_name_1 = file_name_1.split(".")[0] + ".fix.fq"
 
     path_pe_2, file_pe_2 = os.path.split(pe_fq2)
     file_name_2 = str(file_pe_2)
-    filt_name = file_name_2.split(".")[0] + ".fix.fq"
+    filt_name_2 = file_name_2.split(".")[0] + ".fix.fq"
+
+    if os.path.exists(out_dir + filt_name_1) and \
+       os.path.exists(out_dir + filt_name_2):
+        print("Filtered files found for: ")
+        print(pe_fq1)
+        print(pe_fq2)
+        return
 
     pe_in_1 = open(pe_fq1, 'r')
     pe_in_2 = open(pe_fq2, 'r')
@@ -105,7 +116,7 @@ if __name__ == "__main__":
     if len(sys.argv) == 3:
         filter_unfix_se(se_fq = sys.argv[1], out_dir = sys.argv[2])
     elif len(sys.argv) == 4:
-        filter_unfix_pe(pe_fq1 = sys.argv[1], pe_f12 = sys.argv[2], out_dir = sys.argv[3])
+        filter_unfix_pe(pe_fq1 = sys.argv[1], pe_fq2 = sys.argv[2], out_dir = sys.argv[3])
     else:
         print("Usage:")
         print("For single-end reads: python3 filter_unfixable.py fastq_reads output_directory")

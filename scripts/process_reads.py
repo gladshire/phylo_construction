@@ -12,11 +12,12 @@ Entrez.api_key = "6512380b5cb6a15be6ef4919564e2e186508"
 
 def dnld_sra_data(threads, out_dir):
 
-    if os.path.exists(out_dir + "00-raw_seq_data/"):
-        shutil.rmtree(out_dir + "00-raw_seq_data/")
-    os.mkdir(out_dir + "00-raw_seq_data/")
-    os.mkdir(out_dir + "00-raw_seq_data/prefetch_repo/")
-    os.mkdir(out_dir + "00-raw_seq_data/fasterq_dump/")
+    if os.path.exists(out_dir + "00-raw_seq_data/") == False and\
+       os.path.exists(out_dir + "00-raw_seq_data/prefetch_repo/") == False and\
+       os.path.exists(out_dir + "00-raw_seq_data/fasterq_dump/") == False:
+        os.mkdir(out_dir + "00-raw_seq_data/")
+        os.mkdir(out_dir + "00-raw_seq_data/prefetch_repo/")
+        os.mkdir(out_dir + "00-raw_seq_data/fasterq_dump/")
 
     cmd_retrieve = ["python3", "retrieve_sra_data.py", str(threads),
                     out_dir + "00-raw_seq_data/prefetch_repo/",
@@ -38,7 +39,6 @@ def get_layout(file_sra):
 
 
 def process_fastq_dumps(fastq_dir, out_dir, threads):
-    file_skip = []
     out_dir_inter = [None] * 5 
     out_dir_inter[0] = "01-error_correction"
     out_dir_inter[1] = "02-filter_adapter_seq"
@@ -46,34 +46,32 @@ def process_fastq_dumps(fastq_dir, out_dir, threads):
     out_dir_inter[3] = "04-quality_control"
     out_dir_inter[4] = "05-filter_over_represented"
     for d in out_dir_inter:
-        if os.path.exists(d):
-            shutil.rmtree(d)
-        os.mkdir(out_dir + d)
+        if os.path.exists(d) == False:
+            os.mkdir(out_dir + d)
+    
+    se_files = []
+    pe_files_1 = []
+    pe_files_2 = []
 
     for filename in os.listdir(fastq_dir):
-        if filename in file_skip:
-            continue
         file_sra = filename.split("_")[0]
         layout = get_layout(file_sra)
         if layout == "SINGLE":
-            continue
-            read_process.read_process_se(fastq_dir + filename, str(threads))
+            se_files.append(filename)
         elif layout == "PAIRED":
             file_base = filename.split(".")[0]
-            filename1 = fastq_dir + file_base[:-1:] + "1" + ".fastq"
-            filename2 = fastq_dir + file_base[:-1:] + "2" + ".fastq"
             if file_base[-1] == "1":
-                file_skip.append(file_base[:-1:] + "2" + ".fastq")
+                pe_files_1.append(filename)
             elif file_base[-1] == "2":
-                file_skip.append(file_base[:-1:] + "1" + ".fastq")
+                pe_files_2.append(filename)
             else:
-                print("This should not happen")
+                print("Error: Unusual naming scheme for paired reads")
                 sys.exit()
-            read_process.read_process_pe(filename1, filename2, str(threads))
-        else:
-            print("This should not happen")
-            sys.exit()
-
+    read_process.read_process_se(se_fq_files = [fastq_dir + se for se in se_files],
+                                 threads = str(threads))
+    read_process.read_process_pe(pe_fq1_files = [fastq_dir + pe_1 for pe_1 in pe_files_1],
+                                 pe_fq2_files = [fastq_dir + pe_2 for pe_2 in pe_files_2],
+                                 threads = str(threads))
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:

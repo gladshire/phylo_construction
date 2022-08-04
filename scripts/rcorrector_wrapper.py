@@ -13,7 +13,11 @@ def rcorrector_se(se_fq, threads, out_dir):
     path_se, file_se = os.path.split(se_fq)
     se_file = str(file_se)
     corr_name = se_file.split(".")[0] + ".cor.fq"
-
+   
+    print(out_dir + corr_name) 
+    if os.path.exists(out_dir + corr_name):
+        print("Corrected file found for: " + se_fq)
+        return
     cmd = [RCORRECTOR_CMD, "-s", se_fq, "-t", str(threads), "-od", out_dir]
     print(" ".join(cmd))
     subprocess.run(" ".join(cmd), shell=True)
@@ -32,6 +36,12 @@ def rcorrector_pe(pe_fq1, pe_fq2, threads, out_dir):
     pe_file_2 = str(file_pe_2)
     corr_name_2 = pe_file_2.split(".")[0] + ".cor.fq"
 
+    if os.path.exists(out_dir + corr_name_1) and \
+       os.path.exists(out_dir + corr_name_2):
+        print("Corrected files found for: ")
+        print(pe_fq1)
+        print(pe_fq2)
+        return
     cmd = [RCORRECTOR_CMD, "-1", pe_fq1, "-2", pe_fq2, "-t", str(threads), "-od", out_dir]
     print(" ".join(cmd))
     subprocess.run(" ".join(cmd), shell=True)

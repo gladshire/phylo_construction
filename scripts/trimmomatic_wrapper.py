@@ -23,6 +23,15 @@ def trimmomatic_pe(pe_fq1, pe_fq2, threads, out_dir):
     base_name_pe_2 = pe_fq2_name.split(".")[0] + ".paired.trim.fq"
     base_name_up_2 = pe_fq1_name.split(".")[0] + ".paired.trim.fq"
 
+    if os.path.exists(out_dir + base_name_pe_1) and\
+       os.path.exists(out_dir + base_name_up_1) and\
+       os.path.exists(out_dir + base_name_pe_2) and\
+       os.path.exists(out_dir + base_name_up_2):
+        print("Trimmed files found for: ")
+        print(pe_fq1)
+        print(pe_fq2)
+        return
+
     cmd = [TRIMMOMATIC_CMD, "PE", "-phred33", "-threads", str(threads),
            pe_fq1, pe_fq2,
            out_dir + base_name_pe_1,
@@ -43,6 +52,10 @@ def trimmomatic_se(se_fq, threads, out_dir):
     path_se, file_se = os.path.split(se_fq)
     se_fq_name = str(file_se)
     base_name_se = se_fq_name.split(".")[0] + ".trim.fq"
+
+    if os.path.exists(out_dir + base_name_se):
+        print("Trimmed file found for: " + se_fq)
+        return
 
     cmd = [TRIMMOMATIC_CMD, "SE", "-phred33", "-threads", str(threads),
            se_fq,
