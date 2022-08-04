@@ -46,3 +46,15 @@ def assemble_trinity(processed_dir, threads, max_memory_gb):
 
             cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + pe_file_1, processed_dir + pe_file_2, str(threads), str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
             subprocess.run(" ".join(cmd_trin), shell = True)
+
+
+if __name__ == "__main__":
+    curr_dir = os.getcwd()
+    if os.path.isabs(curr_dir) == False: curr_dir = os.path.abspath(curr_dir)
+    if curr_dir[-1] != "/": curr_dir += "/"
+
+    if len(sys.argv) == 3:
+        assemble_trinity(curr_dir + "06-trinity_assembly/", sys.argv[1], sys.argv[2])
+    else:
+        print("Usage:")
+        print("python3 assemble_reads.py threads max_memory_GB")
