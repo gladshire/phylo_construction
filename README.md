@@ -54,7 +54,7 @@ Prior to execution of the read processing script, locate **sras.txt** in the scr
 ```
 Write SRA codes for retrieval below this line
 ```
-Specify the SRA numbers for each run to be retrieved and processed by the pipeline, line-wise and without whitespace. Once all desired SRA numbers are entered, exit and run the **read_process.py** python script:
+Specify the SRA numbers for each run to be retrieved and processed by the pipeline, line-wise and without whitespace. Once all desired SRA numbers are entered, exit and run the **process_reads.py** python script, specifying the desired number of threads to dedicate:
 ```
 python3 process_reads.py num_threads
 ```
