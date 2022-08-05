@@ -2,7 +2,7 @@
 
 ***NOTE: This pipeline is not finished. As of now, it can perform all assembly steps up to and including chimera detection and removal. Downstream steps, such as clustering, tree construction, and tree analysis are not yet implemented***
 
-This pipeline, adapted from that created by *Yang Lab* [[1]](#1), assembles *de novo* transcriptomes from raw SRA data retrievable from the NCBI database. Through the wrapping and use of several third-party packages, all of which are listed below, this pipeline performs all pre-processing, filtration, and QC steps necessary for a ready-for-use transcriptome.
+This pipeline, heavily adapted from that created by Yang Lab [[1]](#1), assembles *de novo* transcriptomes from raw SRA data retrievable from the NCBI database. As an extended version of Yang's, this pipeline enables automatic retrieval and assembly of RNA-seq data, and is more adapted to performing bulk-assemblies in fewer steps. Through the wrapping and use of several third-party packages, all of which are listed below, this pipeline performs all pre-processing, filtration, and QC steps necessary for the bulk assembly of ready-to-use transcriptomes.
 
 ## Dependencies
 **NOTE: for each package listed, the associated version used in the pipeline is given in parentheses. I am not sure if other / newer versions of the packages will work.**
