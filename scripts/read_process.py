@@ -80,9 +80,12 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
     for file_num, file_for_filt in enumerate(foreign_filt_se_reads):
         filter_overrep.filter_overrep_se(file_for_filt, se_fqc_paths[file_num], out_dir + out_dir_inter[4])
 
-
 def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_inter=False):
     # Determine where to store output
+    pe_fq1_files.sort()
+    pe_fq2_files.sort()
+    print(pe_fq1_files)
+    print(pe_fq2_files)
     if out_dir != None:
         if out_dir == ".": out_dier = os.getcwd()
         if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)

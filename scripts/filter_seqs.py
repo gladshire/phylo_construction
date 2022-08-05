@@ -126,6 +126,11 @@ def kraken_filter_pe(db, in_file1, in_file2, threads, out_dir, confidence=0.2):
 
 if __name__ == "__main__":
     if len(sys.argv) == 4:
+        file_path, file_name = os.path.split(sys.argv[1])
+        file_base = str(file_name).split(".")
+        if os.path.exists(sys.argv[3] + "/" + file_base[0] + ".filt.fq"):
+            print("Filtered file found for: " + sys.argv[1])
+            sys.exit()
         for i in FILT_LIST:
             kraken_filter_se(db = "/scratch/kraken2_dbs/" + i,
                              in_file = sys.argv[1],
@@ -133,7 +138,17 @@ if __name__ == "__main__":
                              out_dir = sys.argv[3])
         filter_summary(FILT_LIST, in_file = sys.argv[1], out_dir = sys.argv[3])
     elif len(sys.argv) == 5:
+        file_path_1, file_name_1 = os.path.split(sys.argv[1])
+        file_path_2, file_path_2 = os.path.split(sys.argv[2])
+        file_base_1 = str(file_name_1).split(".")
+        file_base_2 = str(file_name_2).split(".")
         for i in FILT_LIST:
+            if os.path.exists(sys.argv[4] + "/" + file_base_1[0] + ".filt.fq") and\
+               os.path.exists(sys.argv[4] + "/" + file_base_2[0] + ".filt.fq"):
+                print("Filtered files found for: ")
+                print(sys.argv[1])
+                print(sys.argv[2])
+                sys.exit()
             kraken_filter_pe(db = "/scratch/kraken2_dbs/" + i,
                              in_file1 = sys.argv[1],
                              in_file2 = sys.argv[2],

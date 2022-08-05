@@ -37,6 +37,13 @@ def filter_overrep_pe(pe_fq1, pe_fq2, pe_fqc1, pe_fqc2, out_dir):
     pe_fq2_name = str(file_pe_2)
     base_name_pe_2 = pe_fq2_name.split(".")[0] + ".overrep_filtered.fq"
 
+    if os.path.exists(out_dir + base_name_pe_1) and\
+       os.path.exists(out_dir + base_name_pe_2):
+        print("Filtered files found for: ")
+        print(pe_fq1)
+        print(pe_fq2)
+        return
+
     fqin1 = open(pe_fq1, 'r')
     fqin2 = open(pe_fq2, 'r')
     fq1out = open(out_dir + base_name_pe_1, 'w')
@@ -95,6 +102,10 @@ def filter_overrep_se(se_fq, se_fqc, out_dir):
     path_se, file_se = os.path.split(se_fq)
     se_fq_name = str(file_se)
     base_name_se = se_fq_name.split(".")[0] + ".overrep_filtered.fq"
+
+    if os.path.exists(out_dir + base_name_se):
+        print("Filtered file found for: " + se_fq)
+        return
 
     sein = open(se_fq, 'r')
     seout = open(out_dir + base_name_se, 'w')
