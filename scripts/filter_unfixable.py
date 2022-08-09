@@ -6,7 +6,7 @@ def filter_summary(tot_reads, corr_reads, unfx_reads):
     print("\nSUMMARY:\n")
     print("  Total reads processed: {}".format(tot_reads))
     print("  Reads retained: {}".format(corr_reads))
-    print("  Reads removed: {}\n".format(unfx_reads))
+    print("  Unfixable reads removed: {}\n".format(unfx_reads))
 
 
 def filter_unfix_se(se_fq, out_dir):
@@ -20,7 +20,7 @@ def filter_unfix_se(se_fq, out_dir):
     filt_name = file_name.split(".")[0] + ".fix.fq"
     
     if os.path.exists(out_dir + filt_name):
-        print("Filtered file found for: " + se_fq)
+        print("Filtered file found for: " + os.path.split(se_fq)[-1])
         return
  
     se_in = open(se_fq, 'r')
@@ -36,7 +36,8 @@ def filter_unfix_se(se_fq, out_dir):
         while line:
             if line_ct % 4 == 0:
                 tot_rds_ct += 1
-                print("{} reads processed".format(tot_rds_ct), end = "\r")
+                if tot_rds_ct % 100000 == 0:
+                    print("{} reads processed".format(tot_rds_ct), end = "\r")
                 if "unfixable" in line:
                     se_unfx_ct += 1
                     for i in range(4):
@@ -65,8 +66,8 @@ def filter_unfix_pe(pe_fq1, pe_fq2, out_dir):
     if os.path.exists(out_dir + filt_name_1) and \
        os.path.exists(out_dir + filt_name_2):
         print("Filtered files found for: ")
-        print(pe_fq1)
-        print(pe_fq2)
+        print(os.path.split(pe_fq1)[-1])
+        print(os.path.split(pe_fq2)[-1])
         return
 
     pe_in_1 = open(pe_fq1, 'r')
@@ -88,7 +89,8 @@ def filter_unfix_pe(pe_fq1, pe_fq2, out_dir):
         while line_1 and line_2:
             if line_ct % 4 == 0:
                 tot_rds_ct += 1
-                print("Reads processed: {}".format(tot_rds_ct), end = "\r")
+                if tot_rds_ct % 100000 == 0:
+                    print("Reads processed: {}".format(tot_rds_ct), end = "\r")
                 if "unfixable" in line_1 or "unfixable" in line_2:
                     pe_unfx_ct += 1
                     for i in range(4):

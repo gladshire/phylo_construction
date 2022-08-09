@@ -54,7 +54,7 @@ if __name__ == "__main__":
     if curr_dir[-1] != "/": curr_dir += "/"
 
     if len(sys.argv) == 3:
-        assemble_trinity(curr_dir + "06-trinity_assembly/", sys.argv[1], sys.argv[2])
+        assemble_trinity(curr_dir + "05-filter_over_represented/", sys.argv[1], sys.argv[2])
     else:
         print("Usage:")
         print("python3 assemble_reads.py threads max_memory_GB")

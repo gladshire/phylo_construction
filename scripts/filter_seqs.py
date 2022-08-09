@@ -12,7 +12,7 @@ import subprocess
 from itertools import zip_longest
 from os.path import exists
 
-KRAKEN2_LOC = "~/miles/packages/kraken2/"
+KRAKEN2_LOC = "~/miles/packages/kraken2-2.1.2/install/"
 FILT_LIST = ["bacteria", "archaea", "fungi", "viral", "mitochondrion_and_plastid"]
 
 
@@ -26,7 +26,7 @@ def filter_summary(filt_list, in_file, out_dir):
     total_reads_removed = 0
     total_percent_removed = 0
     for i in filt_list:
-        curr_rep = open(out_dir + in_file.split("/")[-1].split(".")[0] + "." + i + ".report", 'r')
+        curr_rep = open(out_dir + in_file.split("/")[-1].split(".")[0][:-2:] + "." + i + ".report", 'r')
         lines = curr_rep.readlines()
         reads_removed = int(lines[1].strip().split()[1])
         percent_removed = float(lines[1].strip().split()[0])
@@ -81,7 +81,7 @@ def kraken_filter_se(db, in_file, threads, out_dir, confidence=0.2):
         in_file = out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq"
     out_file = "temp.fq"
     cmd = [KRAKEN2_LOC + "kraken2", "--threads", str(threads), "--unclassified-out",
-           out_dir + out_file, "--db", db, in_file, "--output", "-", "--report",
+           out_dir + out_file, "--db", db, in_file, "--report",
            out_dir + in_file.split("/")[-1].split(".")[0] + "." + db.split("/")[-1] + ".report"]
     mem_available = psutil.virtual_memory()[1]
     
@@ -89,10 +89,11 @@ def kraken_filter_se(db, in_file, threads, out_dir, confidence=0.2):
     if confidence != None:
         cmd.append("--confidence " + str(confidence))
     if os.path.getsize(db) < mem_available / 2:
-        print("Not enough RAM for Kraken2 database {}".format(db))
+        print("Not enough RAM for Kraken2 database: {}".format(db))
         print("Switching to slower memory-mapping mode...")
         cmd.append("--memory-mapping")
     
+    print(" ".join(cmd)) 
     subprocess.run(" ".join(cmd), shell=True)
     os.rename(out_dir + "temp.fq", out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq")
     
@@ -102,24 +103,28 @@ def kraken_filter_pe(db, in_file1, in_file2, threads, out_dir, confidence=0.2):
     if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
     if out_dir[-1] != "/": out_dir += "/"
 
-    if exists(out_dir + in_file1.split("/")[-1].split(".")[0] + ".filt.fq"):
-        in_file = out_dir + in_file1.split("/")[-1].split(".")[0] + ".filt.fq"
-    out_file = "temp.fq"
+    if exists(out_dir + os.path.split(in_file1)[-1].split(".")[0] + ".filt.fq") and\
+       exists(out_dir + os.path.split(in_file2)[-1].split(".")[0] + ".filt.fq"):
+        in_file1 = out_dir + os.path.split(in_file1)[-1].split(".")[0] + ".filt.fq"
+        in_file2 = out_dir + os.path.split(in_file2)[-1].split(".")[0] + ".filt.fq"
+    out_file = "temp#.fq"
     cmd = [KRAKEN2_LOC + "kraken2", "--threads", str(threads), "--unclassified-out",
-           out_dir + out_file, "--db", db, "--paired", in_file1, in_file2,
-           "--output" "-", "--report", out_file.split("/")[-1].split(".")[0] + "." + db.split("/")[-1] + ".report"]
+           out_dir + out_file, "--db", db, "--paired", "--output", "-", in_file1, in_file2,
+           "--report", out_dir + os.path.split(in_file1)[-1].split(".")[0][:-2:] + "." + db.split("/")[-1] + ".report"]
     mem_available = psutil.virtual_memory()[1]
     
     print("Now filtering: " + db.split("/")[-1].replace("_", " "))
     if confidence != None:
         cmd.append("--confidence " + str(confidence))
-    if os.path.getsize(db) < memory_available / 2:
-        print("Not enough RAM for Kraken2 database {}.".format(db))
+    if os.path.getsize(db) < mem_available / 2:
+        print("Not enough RAM for Kraken2 database: {}.".format(db))
         print("Switching to slower memory-mapping mode...")
         cmd.append("--memory-mapping")
 
+    print(" ".join(cmd))
     subprocess.run(" ".join(cmd), shell=True)
-    os.rename(out_dir + "temp.fq", out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq")
+    os.rename(out_dir + "temp_1.fq", out_dir + in_file1.split("/")[-1].split(".")[0] + ".filt.fq")
+    os.rename(out_dir + "temp_2.fq", out_dir + in_file2.split("/")[-1].split(".")[0] + ".filt.fq")
 
 
 
@@ -129,7 +134,7 @@ if __name__ == "__main__":
         file_path, file_name = os.path.split(sys.argv[1])
         file_base = str(file_name).split(".")
         if os.path.exists(sys.argv[3] + "/" + file_base[0] + ".filt.fq"):
-            print("Filtered file found for: " + sys.argv[1])
+            print("Filtered file found for: " + os.path.split(sys.argv[1])[-1])
             sys.exit()
         for i in FILT_LIST:
             kraken_filter_se(db = "/scratch/kraken2_dbs/" + i,
@@ -139,16 +144,16 @@ if __name__ == "__main__":
         filter_summary(FILT_LIST, in_file = sys.argv[1], out_dir = sys.argv[3])
     elif len(sys.argv) == 5:
         file_path_1, file_name_1 = os.path.split(sys.argv[1])
-        file_path_2, file_path_2 = os.path.split(sys.argv[2])
+        file_path_2, file_name_2 = os.path.split(sys.argv[2])
         file_base_1 = str(file_name_1).split(".")
         file_base_2 = str(file_name_2).split(".")
+        if os.path.exists(sys.argv[4] + "/" + file_base_1[0] + ".filt.fq") and\
+           os.path.exists(sys.argv[4] + "/" + file_base_2[0] + ".filt.fq"):
+            print("Filtered files found for: ")
+            print(os.path.split(sys.argv[1])[-1])
+            print(os.path.split(sys.argv[2])[-1])
+            sys.exit()
         for i in FILT_LIST:
-            if os.path.exists(sys.argv[4] + "/" + file_base_1[0] + ".filt.fq") and\
-               os.path.exists(sys.argv[4] + "/" + file_base_2[0] + ".filt.fq"):
-                print("Filtered files found for: ")
-                print(sys.argv[1])
-                print(sys.argv[2])
-                sys.exit()
             kraken_filter_pe(db = "/scratch/kraken2_dbs/" + i,
                              in_file1 = sys.argv[1],
                              in_file2 = sys.argv[2],

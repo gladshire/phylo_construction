@@ -65,22 +65,21 @@ def get_sra_data(sra_list, threads, out_dir_prefetch, out_dir_fastq):
         if os.path.exists(out_dir_prefetch + sra):
             print("SRA file found: " + sra + ".sra")
             continue
-        print("Downloading: " + organism + " (" + taxon_id + ")" + " ...")
+        print("\nDownloading: " + organism + " (" + taxon_id + ")" + " ...")
         prefetch_cmd = [SRA_TOOLKIT_BIN_PATH + "prefetch", sra,
                         "--max-size", "100g", "--progress",
                         "--output-directory", out_dir_prefetch]
         subprocess.run(" ".join(prefetch_cmd), shell=True)
-    
     for ind, sra in enumerate(sra_list):
         if os.path.exists(out_dir_fastq + out_files[ind]) or\
            (os.path.exists(out_dir_fastq + out_files[ind][:-6:] + "_1" + out_files[ind][-6::]) and\
             os.path.exists(out_dir_fastq + out_files[ind][:-6:] + "_2" + out_files[ind][-6::])):
             print("FastQ file(s) found for " + sra + ": " + out_files[ind] + " ...")
             continue
-        print("Dumping " + sra + ".sra to fastq ...")
+        print("\nDumping " + sra + ".sra to fastq ...")
         fasterq_cmd = [SRA_TOOLKIT_BIN_PATH + "fasterq-dump",
                        out_dir_prefetch + sra, "--threads",
-                       str(threads), "--outfile",
+                       str(threads), "--outfile", "--split-3",
                        out_dir_fastq + out_files[ind]]
         subprocess.run(" ".join(fasterq_cmd), shell=True)
     print("Done.")    

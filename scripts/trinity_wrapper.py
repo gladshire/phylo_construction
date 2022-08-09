@@ -12,6 +12,12 @@ def trinity_pe(pe_fq1, pe_fq2, threads, max_memory_gb, strand, out_dir):
 
     assembly_file = pe_fq1.split(".")[0] + ".Trinity.fasta"
     
+    if os.path.exists(out_dir + assembly_file + ".trinity"):
+        print("Trinity file found for: ")
+        print(pe_fq1)
+        print(pe_fq2)
+        return
+
     if strand == "stranded":
         stranded = "--SS_lib_type RF"
     else:
@@ -24,7 +30,6 @@ def trinity_pe(pe_fq1, pe_fq2, threads, max_memory_gb, strand, out_dir):
            stranded, "--output", out_dir + assembly_file + ".trinity"]
     
     subprocess.run(" ".join(cmd), shell=True)
-    os.rename(out_dir + taxon_id + ".trinity.Trinity.fasta", out_dir + assembly_file)
 
 def trinity_se(se_fq, threads, max_memory_gb, strand, out_dir):
     if out_dir == ".": out_dir = os.getcwd()
@@ -32,6 +37,10 @@ def trinity_se(se_fq, threads, max_memory_gb, strand, out_dir):
     if out_dir[-1] != "/": out_dir += "/"
 
     assembly_file = se_fq.split(".")[0] + ".Trinity.fasta"
+
+    if os.path.exists(out_dir + assembly_file + ".trinity"):
+        print("Trinity file found for: " + se_fq)
+        return
 
     if strand == "stranded":
         stranded = "--SS_lib_type R"
@@ -43,7 +52,6 @@ def trinity_se(se_fq, threads, max_memory_gb, strand, out_dir):
            "--full_cleanup", "--no_normalize_reads", stranded, "--output",
            out_dir + assembly_file + ".trinity"]
     subprocess.run(" ".join(cmd), shell=True)
-    #os.rename(out_dir + taxon_id + ".trinity.Trinity.fasta", out_dir + assembly_file)
 
 
 if __name__ == "__main__":

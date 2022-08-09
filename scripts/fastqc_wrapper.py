@@ -15,11 +15,13 @@ def fastQC_pe(pe_fq1, pe_fq2, threads, out_dir):
     pe_fq2_name = str(file_pe_2)
     base_name_pe_2 = pe_fq2_name.split(".")[0] + ".org_filtered_fastqc.html"
     
-    file_base = pe_fq1.split(".")
-    if os.path.exists(out_dir + file_base[0][:-2:] + ".filt_fastqc"):
-        print("FastQC file found for: ")
-        print(pe_fq1)
-        print(pe_fq2)
+    file_base_1 = file_pe_1.split(".")
+    file_base_2 = file_pe_2.split(".")
+    if os.path.exists(out_dir + file_base_1[0] + ".filt_fastqc") and\
+       os.path.exists(out_dir + file_base_2[0] + ".filt_fastqc"):
+        print("FastQC files found for: ")
+        print(os.path.split(pe_fq1)[-1])
+        print(os.path.split(pe_fq2)[-1])
         return
     cmd = ["fastqc", pe_fq1, pe_fq2, "-t", str(threads), "-o", out_dir, "--extract"]
     print(" ".join(cmd))
@@ -36,7 +38,7 @@ def fastQC_se(se_fq, threads, out_dir):
     base_file = se_fq_name.split(".")    
 
     if os.path.exists(out_dir + base_file[0] + ".filt_fastqc"):
-        print("FastQC file found for: " + se_fq)
+        print("FastQC file found for: " + os.path.split(se_fq)[-1])
         return
 
     cmd = ["fastqc", se_fq, "-t", str(threads), "-o", out_dir, "--extract"]

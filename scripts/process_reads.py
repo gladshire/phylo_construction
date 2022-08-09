@@ -67,8 +67,11 @@ def process_fastq_dumps(fastq_dir, out_dir, threads):
             else:
                 print("Error: Unusual naming scheme for paired reads")
                 sys.exit()
+
+    print("\nNow initiating processing of single-ended runs ...\n")
     read_process.read_process_se(se_fq_files = [fastq_dir + se for se in se_files],
                                  threads = str(threads))
+    print("\nNow initiating processing of paired-ended runs ...\n")
     read_process.read_process_pe(pe_fq1_files = [fastq_dir + pe_1 for pe_1 in pe_files_1],
                                  pe_fq2_files = [fastq_dir + pe_2 for pe_2 in pe_files_2],
                                  threads = str(threads))

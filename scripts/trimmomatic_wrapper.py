@@ -16,23 +16,23 @@ def trimmomatic_pe(pe_fq1, pe_fq2, threads, out_dir):
     path_pe_1, file_pe_1 = os.path.split(pe_fq1)
     pe_fq1_name = str(file_pe_1)
     base_name_pe_1 = pe_fq1_name.split(".")[0] + ".paired.trim.fq"
-    base_name_up_1 = pe_fq1_name.split(".")[0] + ".paired.trim.fq"
+    base_name_up_1 = pe_fq1_name.split(".")[0] + ".unpaired.trim.fq"
 
     path_pe_2, file_pe_2 = os.path.split(pe_fq2)
     pe_fq2_name = str(file_pe_2)
     base_name_pe_2 = pe_fq2_name.split(".")[0] + ".paired.trim.fq"
-    base_name_up_2 = pe_fq1_name.split(".")[0] + ".paired.trim.fq"
+    base_name_up_2 = pe_fq1_name.split(".")[0] + ".unpaired.trim.fq"
 
     if os.path.exists(out_dir + base_name_pe_1) and\
        os.path.exists(out_dir + base_name_up_1) and\
        os.path.exists(out_dir + base_name_pe_2) and\
        os.path.exists(out_dir + base_name_up_2):
         print("Trimmed files found for: ")
-        print(pe_fq1)
-        print(pe_fq2)
+        print(os.path.split(pe_fq1)[-1])
+        print(os.path.split(pe_fq2)[-1])
         return
 
-    cmd = [TRIMMOMATIC_CMD, "PE", "-phred33", "-threads", str(threads),
+    cmd = [TRIMMOMATIC_CMD, "PE", "-threads", str(threads),
            pe_fq1, pe_fq2,
            out_dir + base_name_pe_1,
            out_dir + base_name_up_1,
@@ -54,10 +54,10 @@ def trimmomatic_se(se_fq, threads, out_dir):
     base_name_se = se_fq_name.split(".")[0] + ".trim.fq"
 
     if os.path.exists(out_dir + base_name_se):
-        print("Trimmed file found for: " + se_fq)
+        print("Trimmed file found for: " + os.path.split(se_fq)[-1])
         return
 
-    cmd = [TRIMMOMATIC_CMD, "SE", "-phred33", "-threads", str(threads),
+    cmd = [TRIMMOMATIC_CMD, "SE", "-threads", str(threads),
            se_fq,
            out_dir + base_name_se,
            trim_setting]

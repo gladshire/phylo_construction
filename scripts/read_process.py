@@ -41,51 +41,55 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         base_names_se.append(se_fq_names[-1].split(".")[0])
 
     # Error correct with Rcorrector
-    print("Running error correction...")
+    print("\nRunning error correction ...\n")
     corrected_ses = []
     for file_num, file_name in enumerate(se_fq_files):
+        print("Correcting: " + file_name)
         rcorrector_wrapper.rcorrector_se(file_name, threads, out_dir + out_dir_inter[0])
         corrected_ses.append(out_dir + out_dir_inter[0] + "/" +  base_names_se[file_num] + ".cor.fq")
 
     # Remove unfixable errors found by Rcorrector
-    print("Removing unfixable error reads...")
+    print("\nRemoving unfixable error reads ...\n")
     filtered_ses = []
     for file_num, file_cor in enumerate(corrected_ses):
+        print("Filtering: " + file_cor)
         filter_unfixable.filter_unfix_se(file_cor, out_dir + out_dir_inter[0])
         filtered_ses.append(out_dir + out_dir_inter[0] + "/" + base_names_se[file_num] + ".fix.fq")
 
     # Trim adapter sequences from reads with Trimmomatic
-    print("Trimming adapter sequences...")
+    print("\nTrimming adapter sequences ...\n")
     trimmed_ses = []
     for file_num, file_filt in enumerate(filtered_ses):
+        print("Trimming: " + file_filt)
         trimmomatic_wrapper.trimmomatic_se(file_filt, threads, out_dir + out_dir_inter[1])
         trimmed_ses.append(out_dir + out_dir_inter[1] + "/" + base_names_se[file_num] + ".trim.fq")
 
     # Filter undesired genome/transcriptome reads with Kraken2
-    print("Filtering foreign reads...")
+    print("\nFiltering foreign reads ...\n")
     foreign_filt_se_reads = []
     for file_num, file_trim in enumerate(trimmed_ses):
+        print("Filtering: " + file_trim)
         subprocess.run(["python3", "filter_seqs.py", file_trim, threads, out_dir + "/" +  out_dir_inter[2]])
         foreign_filt_se_reads.append(out_dir + out_dir_inter[2] + "/" + base_names_se[file_num] + ".filt.fq")
 
     # Perform quality analysis with FastQC
-    print("Running quality analysis...")
+    print("\nRunning quality analysis ...\n")
     se_fqc_paths = []
     for file_num, file_for_filt in enumerate(foreign_filt_se_reads):
+        print("Analyzing: " + file_for_filt)
         fastqc_wrapper.fastQC_se(file_for_filt, threads, out_dir + out_dir_inter[3])
         se_fqc_paths.append(out_dir + out_dir_inter[3] + "/" + base_names_se[file_num] + ".filt_fastqc/fastqc_data.txt")
 
     # Remove over-represented reads found by FastQC
-    print("Removing over-represented reads...")
+    print("\nRemoving over-represented reads ...\n")
     for file_num, file_for_filt in enumerate(foreign_filt_se_reads):
+        print("Filtering: " + file_for_filt)
         filter_overrep.filter_overrep_se(file_for_filt, se_fqc_paths[file_num], out_dir + out_dir_inter[4])
 
 def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_inter=False):
     # Determine where to store output
     pe_fq1_files.sort()
     pe_fq2_files.sort()
-    print(pe_fq1_files)
-    print(pe_fq2_files)
     if out_dir != None:
         if out_dir == ".": out_dier = os.getcwd()
         if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
@@ -132,54 +136,72 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
     num_pes = len(pe_fq_names_1)
 
     # Error correct with Rcorrector
-    print("Running error correction...")
+    print("\nRunning error correction ...\n")
     corrected_pes_1 = []
     corrected_pes_2 = []
     for i in range(0, num_pes):
+        print("Correcting: ")
+        print(pe_fq1_files[i])
+        print(pe_fq2_files[i])
         rcorrector_wrapper.rcorrector_pe(pe_fq1_files[i], pe_fq2_files[i], threads, out_dir + out_dir_inter[0])
         corrected_pes_1.append(out_dir + out_dir_inter[0] + "/" + base_names_pe_1[i] + ".cor.fq")
         corrected_pes_2.append(out_dir + out_dir_inter[0] + "/" + base_names_pe_2[i] + ".cor.fq")
 
     # Remove unfixable errors found by Rcorrector
-    print("Removing unfixable error reads...")
+    print("\nRemoving unfixable error reads ...\n")
     filtered_pes_1 = []
     filtered_pes_2 = []
     for i in range(0, num_pes):
+        print("Filtering: ")
+        print(corrected_pes_1[i])
+        print(corrected_pes_2[i])
         filter_unfixable.filter_unfix_pe(corrected_pes_1[i], corrected_pes_2[i], out_dir + out_dir_inter[0])
         filtered_pes_1.append(out_dir + out_dir_inter[0] + "/" + base_names_pe_1[i] + ".fix.fq")
         filtered_pes_2.append(out_dir + out_dir_inter[0] + "/" + base_names_pe_2[i] + ".fix.fq")
 
     # Trim adapter sequences from reads with Trimmomatic
-    print("Trimming adapter sequences...")
+    print("\nTrimming adapter sequences ...\n")
     trimmed_pes_1 = []
     trimmed_pes_2 = []
     for i in range(0, num_pes):
+        print("Trimming:")
+        print(filtered_pes_1[i])
+        print(filtered_pes_2[i])
         trimmomatic_wrapper.trimmomatic_pe(filtered_pes_1[i], filtered_pes_2[i], threads, out_dir + out_dir_inter[1])
-        trimmed_pes_1.append(out_dir + out_dir_inter[1] + "/" + base_names_pe_1[i] + ".trim.fq")
-        trimmed_pes_2.append(out_dir + out_dir_inter[1] + "/" + base_names_pe_2[i] + ".trim.fq")
+        trimmed_pes_1.append(out_dir + out_dir_inter[1] + "/" + base_names_pe_1[i] + ".paired.trim.fq")
+        trimmed_pes_2.append(out_dir + out_dir_inter[1] + "/" + base_names_pe_2[i] + ".paired.trim.fq")
     
     # Filter undesired genome/transcriptome reads with Kraken2
-    print("Filtering foreign reads...")
+    print("\nFiltering foreign reads ...\n")
     foreign_filt_pes_1 = []
     foreign_filt_pes_2 = []
     for i in range(0, num_pes):
+        print("Filtering:")
+        print(trimmed_pes_1[i])
+        print(trimmed_pes_2[i])
         subprocess.run(["python3", "filter_seqs.py", trimmed_pes_1[i], trimmed_pes_2[i], threads, out_dir + out_dir_inter[2]])
         foreign_filt_pes_1.append(out_dir + out_dir_inter[2] + "/" + base_names_pe_1[i] + ".filt.fq")
         foreign_filt_pes_2.append(out_dir + out_dir_inter[2] + "/" + base_names_pe_2[i] + ".filt.fq")
 
     # Perform quality analysis with FastQC
-    print("Running quality analysis...")
+    print("\nRunning quality analysis ...\n")
     pe_fqc1_paths = []
     pe_fqc2_paths = []
     for i in range(0, num_pes):
+        print("Analyzing:")
+        print(foreign_filt_pes_1[i])
+        print(foreign_filt_pes_2[i])
         fastqc_wrapper.fastQC_pe(foreign_filt_pes_1[i], foreign_filt_pes_2[i], threads, out_dir + out_dir_inter[3])
         pe_fqc1_paths.append(out_dir + out_dir_inter[3] + "/" + base_names_pe_1[i] + ".filt_fastqc/fastqc_data.txt")
         pe_fqc2_paths.append(out_dir + out_dir_inter[3] + "/" + base_names_pe_2[i] + ".filt_fastqc/fastqc_data.txt")
 
     # Remove over-represented reads found by FastQC
-    print("Removing over-represented reads...")
+    print("\nRemoving over-represented reads ...\n")
     for i in range(0, num_pes):
-        filter_overrep.filter_overrep_se(foreign_filt_pes_1[i], foreign_filt_pes_2[i], pe_fqc1_paths[i], pe_fqc2_paths[i], out_dir + out_dir_inter[4])
+        print("Filtering:")
+        print(foreign_filt_pes_1[i])
+        print(foreign_filt_pes_2[i])
+        filter_overrep.filter_overrep_pe(foreign_filt_pes_1[i], foreign_filt_pes_2[i], pe_fqc1_paths[i], pe_fqc2_paths[i], out_dir + out_dir_inter[4])
 
 
 

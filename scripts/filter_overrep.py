@@ -22,7 +22,7 @@ def overrep_summary(tot_rds_ct, tot_fail_ct):
     print("SUMMARY:                    \n")
     print("  Total reads processed: {}".format(tot_rds_ct))
     print("  Reads retained: {}".format(tot_rds_ct - tot_fail_ct))
-    print("  Reads removed: {}\n".format(tot_fail_ct))
+    print("  Overrepresented reads removed: {}\n".format(tot_fail_ct))
 
 def filter_overrep_pe(pe_fq1, pe_fq2, pe_fqc1, pe_fqc2, out_dir):
     if out_dir == ".": out_dir = os.getcwd()
@@ -40,8 +40,8 @@ def filter_overrep_pe(pe_fq1, pe_fq2, pe_fqc1, pe_fqc2, out_dir):
     if os.path.exists(out_dir + base_name_pe_1) and\
        os.path.exists(out_dir + base_name_pe_2):
         print("Filtered files found for: ")
-        print(pe_fq1)
-        print(pe_fq2)
+        print(os.path.split(pe_fq1)[-1])
+        print(os.path.split(pe_fq2)[-1])
         return
 
     fqin1 = open(pe_fq1, 'r')
@@ -56,14 +56,14 @@ def filter_overrep_pe(pe_fq1, pe_fq2, pe_fqc1, pe_fqc2, out_dir):
     tot_fail_ct = 0
     line_num = 0
 
-    print("Initiating removal of over-represented reads...")
     with fqin1 as f1, fqin2 as f2:
         head1 = f1.readline()
         head2 = f2.readline()
         while head1 and head2:
             if line_num % 4 == 0:
                 tot_rds_ct += 1
-                print("{} reads processed".format(tot_rds_ct), end = "\r")
+                if tot_rds_ct % 100000 == 0:
+                    print("{} reads processed".format(tot_rds_ct), end = "\r")
                 
                 if line_num != 0:
                     head1 = f1.readline()
@@ -104,7 +104,7 @@ def filter_overrep_se(se_fq, se_fqc, out_dir):
     base_name_se = se_fq_name.split(".")[0] + ".overrep_filtered.fq"
 
     if os.path.exists(out_dir + base_name_se):
-        print("Filtered file found for: " + se_fq)
+        print("Filtered file found for: " + os.path.split(se_fq)[-1])
         return
 
     sein = open(se_fq, 'r')
@@ -116,13 +116,13 @@ def filter_overrep_se(se_fq, se_fqc, out_dir):
     tot_fail_ct = 0
     line_num = 0
 
-    print("Initiating removal of over-represented reads...")
     with sein as f1:
         head = f1.readline()
         while head:
             if line_num % 4 == 0:
                 tot_rds_ct += 1
-                print("{} reads processed".format(tot_rds_ct), end = "\r")
+                if tot_rds_ct % 100000 == 0:
+                    print("{} reads processed".format(tot_rds_ct), end = "\r")
                 
                 if line_num != 0:
                     head = f1.readline()
