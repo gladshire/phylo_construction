@@ -10,7 +10,15 @@ import subprocess
 #   4. Filter corset output (filter_corset_output.py)
 #   5. Run translation with transrate (transrate_wrapper.py)
 
-def post_assembly():
+def post_assembly(out_dir):
     
     for filename in os.listdir("05-filter_over_represented"):
-        fq_to_fa_cmd = ["python3", "fq_to_fa.py", filename, 
+        file_path, file_name = os.path.split(filename)
+        fq_to_fa_cmd = ["python3", "fq_to_fa.py", "05-filter_over_represented/" + filename, out_dir]
+        subprocess.run(" ".join(fq_to_fa_cmd), shell = True)
+
+
+
+
+if __name__ == "__main__":
+    post_assembly("/scratch/miles/allele_phasing/phylo_construction/scripts")
