@@ -72,7 +72,14 @@ Once complete, all output assemblies can be found in the **"06-trinity_assembly"
 
 ### 3. Transcript filtering and translation <a name="filt_trans"></a>
 
-With our newly-assembled Trinity transcripts, the next step is to remove chimeric transcripts. This step utilizes BLAST along with a reference proteome to identify and remove chimeras from the Trinity transcripts. For the reference proteome, choose several species that are closely related to those being fed through the pipeline. For instance, when passing in several plants from the Caryophyllales family, one may assemble the reference proteome from spinach, beets, and arabidopsis proteomes.
+The following steps are performed during transcript filtering and translation:
+
+1. Chimera detection and removal with BLASTX
+2. Transcript clustering with Corset
+3. Filtering of Corset clusters
+4. Translation with Transdecoder
+
+With our newly-assembled Trinity transcripts, the next stage is to filter and translate them. All above steps are handled by the **post_assembly.py** script. The first step here utilizes BLAST along with a reference proteome to identify and remove chimeras from the Trinity transcripts. For the reference proteome, choose several species that are closely related to those being fed through the pipeline. For instance, when passing in several plants from the Caryophyllales family, one may assemble the reference proteome from spinach, beets, and arabidopsis proteomes.
 
 For simple construction of the reference proteome, a script called **concat_fasta.py** has been provided, and can be executed thus:
 ```
