@@ -12,7 +12,7 @@ import filter_overrep
 def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
     # Determine where to store output
     if out_dir != None:
-        if out_dir == ".": out_dier = os.getcwd()
+        if out_dir == ".": out_dir = os.getcwd()
         if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
         if out_dir[-1] != "/": out_dir += "/"
     else:
@@ -42,6 +42,9 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
 
     # Error correct with Rcorrector
     print("\nRunning error correction ...\n")
+    if os.path.exists(out_dir + out_dir_inter[0] == False:
+        os.mkdir(out_dir + out_dir_inter[0])
+        
     corrected_ses = []
     for file_num, file_name in enumerate(se_fq_files):
         print("Correcting: " + file_name)
@@ -58,6 +61,9 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
 
     # Trim adapter sequences from reads with Trimmomatic
     print("\nTrimming adapter sequences ...\n")
+    if os.path.exists(out_dir + out_dir_inter[1]) == False:
+        os.mkdir(out_dir + out_dir_inter[1])
+
     trimmed_ses = []
     for file_num, file_filt in enumerate(filtered_ses):
         print("Trimming: " + file_filt)
@@ -66,6 +72,9 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
 
     # Filter undesired genome/transcriptome reads with Kraken2
     print("\nFiltering foreign reads ...\n")
+    if os.path.exists(out_dir + out_dir_inter[2]) == False:
+        os.mkdir(out_dir + out_dir_inter[2])
+
     foreign_filt_se_reads = []
     for file_num, file_trim in enumerate(trimmed_ses):
         print("Filtering: " + file_trim)
@@ -74,6 +83,9 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
 
     # Perform quality analysis with FastQC
     print("\nRunning quality analysis ...\n")
+    if os.path.exists(out_dir + out_dir_inter[3]) == False:
+        os.mkdir(out_dir + out_dir_inter[3])
+
     se_fqc_paths = []
     for file_num, file_for_filt in enumerate(foreign_filt_se_reads):
         print("Analyzing: " + file_for_filt)
@@ -82,6 +94,9 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
 
     # Remove over-represented reads found by FastQC
     print("\nRemoving over-represented reads ...\n")
+    if os.path.exists(out_dir + out_dir_inter[4]):
+        os.mkdir(out_dir + out_dir_inter[4])
+
     for file_num, file_for_filt in enumerate(foreign_filt_se_reads):
         print("Filtering: " + file_for_filt)
         filter_overrep.filter_overrep_se(file_for_filt, se_fqc_paths[file_num], out_dir + out_dir_inter[4])
@@ -137,6 +152,9 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
 
     # Error correct with Rcorrector
     print("\nRunning error correction ...\n")
+    if os.path.exists(out_dir + out_dir_inter[0]):
+        os.mkdir(out_dir + out_dir_inter[0])
+
     corrected_pes_1 = []
     corrected_pes_2 = []
     for i in range(0, num_pes):
@@ -161,6 +179,9 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
 
     # Trim adapter sequences from reads with Trimmomatic
     print("\nTrimming adapter sequences ...\n")
+    if os.path.exists(out_dir + out_dir_inter[1]):
+        os.mkdir(out_dir + out_dir_inter[1])
+
     trimmed_pes_1 = []
     trimmed_pes_2 = []
     for i in range(0, num_pes):
@@ -173,6 +194,9 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
     
     # Filter undesired genome/transcriptome reads with Kraken2
     print("\nFiltering foreign reads ...\n")
+    if os.path.exists(out_dir + out_dir_inter[2]):
+        os.mkdir(out_dir + out_dir_inter[2])
+
     foreign_filt_pes_1 = []
     foreign_filt_pes_2 = []
     for i in range(0, num_pes):
@@ -185,6 +209,9 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
 
     # Perform quality analysis with FastQC
     print("\nRunning quality analysis ...\n")
+    if os.path.exists(out_dir + out_dir_inter[3]):
+        os.mkdir(out_dir + out_dir_inter[3])
+
     pe_fqc1_paths = []
     pe_fqc2_paths = []
     for i in range(0, num_pes):
@@ -197,6 +224,9 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
 
     # Remove over-represented reads found by FastQC
     print("\nRemoving over-represented reads ...\n")
+    if os.path.exists(out_dir + out_dir_inter[4]):
+        os.mkdir(out_dir + out_dir_inter[4])
+
     for i in range(0, num_pes):
         print("Filtering:")
         print(foreign_filt_pes_1[i])

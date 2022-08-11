@@ -20,6 +20,12 @@ def make_blast_db(proteome_ref, out_dir):
     db_file_2 = ref_base_name + ".pin"
     db_file_3 = ref_base_name + ".psq"
 
+    if os.path.exists(out_dir + db_file_1) and\
+       os.path.exists(out_dir + db_file_2) and\
+       os.path.exists(out_dir + db_file_3):
+        print("BLAST database found for: " + ref_base_name)
+        return
+
     cmd = ["makeblastdb", "-in", proteome_ref, "-dbtype", "prot", "-out",
            out_dir + ref_base_name]
 
@@ -37,6 +43,10 @@ def run_blastx(transcripts, blast_db, threads, out_dir):
     transcript_base_name = transcript_name.split(".")[0]
 
     blastx_output_file = transcript_base_name + ".blastx"
+
+    if os.path.exists(out_dir + blastx_output_file):
+        print("BLASTX output found for: " + transcript_base_name)
+        return
 
     cmd = ["blastx", "-db", blast_db, "-query", transcripts, "-evalue", "0.01", "-outfmt",
            '"6 qseqid qlen sseqid slen frames pident nident length mismatch gapopen qstart qend sstart send evalue bitscore"', "-out", out_dir + blastx_output_file, "-num_threads",
@@ -59,6 +69,11 @@ def run_chimera_detection(blastx_output_file, out_dir):
     cut_file = blastx_base_name + ".cut"
     info_file = blastx_base_name + ".info"
 
+    if os.path.exists(out_dir + cut_file) and\
+       os.path.exists(out_dir + info_file):
+        print("Chimera detection files found for: " + blastx_base_name)
+        return
+
     cmd = ["python3", SCRIPTS_HOME + "detect_chimera_from_blastx.py",
            blastx_output_file, out_dir]
 
@@ -78,21 +93,26 @@ def remove_chimeras_from_fasta(transcripts, info_file, out_dir):
     filtered_transcripts = transcript_base_name + ".filtered_transcripts.fa"
     chimeric_transcripts = transcript_base_name + ".chimeric_transcripts.fa"
 
+    if os.path.exists(out_dir + filtered_transcripts):
+        print("Filtered transcripts found for: " + transcript_base_name)
+        return
+
     transcripts_original = SeqIO.index(transcripts, "fasta")
 
     df = pd.read_table(info_file, header = None)
     blastx_columns = "qseqid qlen sseqid slen frames pident nident length mismatch gapopen qstart qend sstart send evalue bitscore empty".strip().split(" ")
     df.columns = blastx_columns
     chimera_names = (df["qseqid"]).drop_duplicates()
-
+    
+    print("SUMMARY:\n")
     if len(chimera_names) == 0:
-        print("No chimeras found")
+        print("  No chimeras found")
     else:
         chimeras = []
         for i in chimera_names:
             chimeras.append(transcripts_original[i])
         count = SeqIO.write(chimeras, out_dir + chimeric_transcripts, "fasta")
-        print("Removed {} chimeras".format(count))
+        print("  Removed {} chimeras\n".format(count))
 
         chimera_list = chimera_names.tolist()
         all_transcripts_ids = sorted(transcripts_original)
@@ -100,13 +120,13 @@ def remove_chimeras_from_fasta(transcripts, info_file, out_dir):
 
 
     if len(chimera_names) == 0:
-        print("No non-chimeras found")
+        print("  No non-chimeras found")
     else:
         non_chimeras = []
         for i in non_chimeras_names:
             non_chimeras.append(transcripts_original[i])
         count = SeqIO.write(non_chimeras, out_dir + filtered_transcripts, "fasta")
-        print("Retained {} transcripts".format(count))
+        print("  Retained {} transcripts".format(count))
 
 
 

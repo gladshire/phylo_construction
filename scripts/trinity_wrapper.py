@@ -10,9 +10,10 @@ def trinity_pe(pe_fq1, pe_fq2, threads, max_memory_gb, strand, out_dir):
     if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
     if out_dir[-1] != "/": out_dir += "/"
 
-    assembly_file = pe_fq1.split(".")[0] + ".Trinity.fasta"
+    assembly_file = os.path.split(pe_fq1)[-1]
+    assembly_base = assembly_file.split(".")[0]
     
-    if os.path.exists(out_dir + assembly_file + ".trinity"):
+    if os.path.exists(out_dir + assembly_base[:-2:] + ".trinity.Trinity.fasta"):
         print("Trinity file found for: ")
         print(pe_fq1)
         print(pe_fq2)
@@ -23,11 +24,10 @@ def trinity_pe(pe_fq1, pe_fq2, threads, max_memory_gb, strand, out_dir):
     else:
         stranded = ""
    
-    #cmd = "ulimit -s unlimited\n"
     cmd = [TRINITY_CMD, "--seqType fq", "--left", pe_fq1, "--right", pe_fq2,
            "--max_memory", str(max_memory_gb) + "G", "--CPU", str(threads),
            "--bflyCalculateCPU", "--full_cleanup", "--no_normalize_reads",
-           stranded, "--output", out_dir + assembly_file + ".trinity"]
+           stranded, "--output", out_dir + assembly_base[:-2:] + ".trinity"]
     
     subprocess.run(" ".join(cmd), shell=True)
 
@@ -36,9 +36,10 @@ def trinity_se(se_fq, threads, max_memory_gb, strand, out_dir):
     if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
     if out_dir[-1] != "/": out_dir += "/"
 
-    assembly_file = se_fq.split(".")[0] + ".Trinity.fasta"
-
-    if os.path.exists(out_dir + assembly_file + ".trinity"):
+    assembly_file = os.path.split(se_fq)[-1]
+    assembly_base = assembly_file.split(".")[0]
+   
+    if os.path.exists(out_dir + assembly_base + ".trinity.Trinity.fasta"):
         print("Trinity file found for: " + se_fq)
         return
 
@@ -47,10 +48,12 @@ def trinity_se(se_fq, threads, max_memory_gb, strand, out_dir):
     else:
         stranded = ""
 
+    print(out_dir)
+
     cmd = [TRINITY_CMD, "--seqType", "fq", "--single", se_fq, "--max_memory",
            str(max_memory_gb) + "G", "--CPU", str(threads), "--bflyCalculateCPU",
            "--full_cleanup", "--no_normalize_reads", stranded, "--output",
-           out_dir + assembly_file + ".trinity"]
+           out_dir + assembly_base + ".trinity"]
     subprocess.run(" ".join(cmd), shell=True)
 
 

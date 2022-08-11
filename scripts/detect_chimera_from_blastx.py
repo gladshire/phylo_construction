@@ -1,8 +1,11 @@
 import sys
 import os
+import time
+
 
 PIDENT_CUTOFF = 30
 LENGTH_CUTOFF = 100
+
 
 def qcov(hsp):
     return abs(hsp[11] - hsp[10]) + 1
@@ -89,17 +92,16 @@ if __name__ == "__main__":
     outfile1 = open(out_dir + blastx_base_name + ".cut", "w")
     outfile2 = open(out_dir + blastx_base_name + ".info", "w")
     last_query = ""
-
+    
     for line in infile:
         if len(line) < 3:
             continue
-        hsp = linestrip().split("\t")
+        hsp = line.strip().split("\t")
         for i in [5, 10, 11]:
-            hsp[i] = float(hsp[1])
+            hsp[i] = float(hsp[i])
         if hsp[5] < PIDENT_CUTOFF or qcov(hsp) < LENGTH_CUTOFF:
             continue
         query, hit = hsp[0], hsp[2]
- 
         if last_query == "":
             hit_block = [hsp]
             query_block = [hsp]

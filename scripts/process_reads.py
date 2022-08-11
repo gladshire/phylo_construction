@@ -39,16 +39,6 @@ def get_layout(file_sra):
 
 
 def process_fastq_dumps(fastq_dir, out_dir, threads):
-    out_dir_inter = [None] * 5 
-    out_dir_inter[0] = "01-error_correction"
-    out_dir_inter[1] = "02-filter_adapter_seq"
-    out_dir_inter[2] = "03-filter_foreign_dna"
-    out_dir_inter[3] = "04-quality_control"
-    out_dir_inter[4] = "05-filter_over_represented"
-    for d in out_dir_inter:
-        if os.path.exists(d) == False:
-            os.mkdir(out_dir + d)
-    
     se_files = []
     pe_files_1 = []
     pe_files_2 = []
