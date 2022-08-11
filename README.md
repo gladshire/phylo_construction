@@ -66,11 +66,22 @@ Following initial processing of the reads, Trinity will be used to generate *de 
 ```
 python3 assemble_reads.py num_threads max_memory_GB
 ```
-This will initiate Trinity assembly for all processed transcripts in series. Note that this step can be quite time consuming, depending on the size of the dataset in question, and will likely be the longest step in the pipeline's total runtime.
+This will initiate Trinity assembly for all processed transcripts in series. Note that this step can be quite time consuming, depending on the size and complexity of the dataset in question.
 
 Once complete, all output assemblies can be found in the **"06-trinity_assembly"** folder in the current working directory.
 
 ### 3. Transcript filtering and translation <a name="filt_trans"></a>
+
+With our newly-assembled Trinity transcripts, the next step is to remove chimeric transcripts. This step utilizes BLAST along with a reference proteome to identify and remove chimeras from the Trinity transcripts. For the reference proteome, choose several species that are closely related to those being fed through the pipeline. For instance, when passing in several plants from the Caryophyllales family, one may assemble the reference proteome from spinach, beets, and arabidopsis proteomes.
+
+For simple construction of the reference proteome, a script called **concat_fasta.py** has been provided, and can be executed thus:
+```
+python3 concat_fasta.py [proteome_1.fasta, proteome_2.fasta, ...] output_file_name.fasta output_directory
+```
+With a reference proteome ready, simply run the **post_assembly.py** script:
+```
+python3 post_assembly.py proteome_reference.fasta threads
+```
 
 ### 4. Clustering <a name="clustering"></a>
 
