@@ -90,13 +90,6 @@ With a reference proteome ready, simply run the **post_assembly.py** script:
 python3 post_assembly.py proteome_reference.fasta threads
 ```
 
-### 4. Clustering <a name="clustering"></a>
-
-### 5. Build homolog trees <a name="homo_trees"></a>
-
-### 6. Paralogy pruning <a name="para_prune"></a>
-
-### 7. Construct supermatrix <a name="supermatrix"></a>
 
 ## References
 <a id= "1">[1]</a>  Yang Lab (2021) Phylogenomic Dataset Construction. https://bitbucket.org/yanglab/phylogenomic_dataset_construction.git
