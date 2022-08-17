@@ -20,10 +20,6 @@ This pipeline, heavily adapted from that created by Yang Lab [[1]](#1), assemble
 [1. Retrieval and read processing](#read_processing)  
 [2. Assembly with Trinity](#trinity)  
 [3. Transcript filtering and translation](#filt_trans)  
-[4. Clustering](#clustering)  
-[5. Build homolog trees](#homo_trees)  
-[6. Paralogy pruning](#para_prune)  
-[7. Construct supermatrix](#supermatrix)  
 
 
 ### 1. Retrieval and read processing <a name="read_processing"></a>
