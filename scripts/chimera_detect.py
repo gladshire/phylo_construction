@@ -43,7 +43,7 @@ def run_blastx(transcripts, blast_db, threads, out_dir):
     transcript_base_name = transcript_name.split(".")[0]
 
     blastx_output_file = transcript_base_name + ".blastx"
-
+    print(out_dir + blastx_output_file)
     if os.path.exists(out_dir + blastx_output_file):
         print("BLASTX output found for: " + transcript_base_name)
         return
@@ -112,7 +112,7 @@ def remove_chimeras_from_fasta(transcripts, info_file, out_dir):
         for i in chimera_names:
             chimeras.append(transcripts_original[i])
         count = SeqIO.write(chimeras, out_dir + chimeric_transcripts, "fasta")
-        print("  Removed {} chimeras\n".format(count))
+        print("  Removed {} chimeras".format(count))
 
         chimera_list = chimera_names.tolist()
         all_transcripts_ids = sorted(transcripts_original)
@@ -126,7 +126,7 @@ def remove_chimeras_from_fasta(transcripts, info_file, out_dir):
         for i in non_chimeras_names:
             non_chimeras.append(transcripts_original[i])
         count = SeqIO.write(non_chimeras, out_dir + filtered_transcripts, "fasta")
-        print("  Retained {} transcripts".format(count))
+        print("  Retained {} transcripts\n".format(count))
 
 
 

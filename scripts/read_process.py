@@ -42,7 +42,7 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
 
     # Error correct with Rcorrector
     print("\nRunning error correction ...\n")
-    if os.path.exists(out_dir + out_dir_inter[0] == False:
+    if os.path.exists(out_dir + out_dir_inter[0]) == False:
         os.mkdir(out_dir + out_dir_inter[0])
         
     corrected_ses = []

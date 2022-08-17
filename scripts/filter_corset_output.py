@@ -27,7 +27,7 @@ def filter_corset(transcripts, corset_cluster, out_dir):
     seqid = []
     length = []
 
-    for rec in SeqIO.parse(transcripts, "fastq"):
+    for rec in SeqIO.parse(transcripts, "fasta"):
         name = rec.id
         seq = rec.seq
         seqLen = len(rec)
@@ -36,15 +36,15 @@ def filter_corset(transcripts, corset_cluster, out_dir):
     d = {"seqid": seqid, "length": length}
     seq_len_df = pd.DataFrame(d)
 
-    seq_len_filtered_df = seq_len_df[seq_len_df["seqid"].isin(clusters_df["seqid"])
+    seq_len_filtered_df = seq_len_df[seq_len_df["seqid"].isin(clusters_df["seqid"])]
 
     clusters_with_len_df = pd.merge(clusters_df, seq_len_filtered_df, on = "seqid", how = "left")
 
     largest_cluster_df = clusters_with_len_df.sort_values("length", ascending = False).drop_duplicates("cluster").sort_index()
 
-    removed_cluster_df = clusters_with_len_df[~clusters_with_len_df["seqid"].isin(largest_cluster_df["seqid"])
+    removed_cluster_df = clusters_with_len_df[~clusters_with_len_df["seqid"].isin(largest_cluster_df["seqid"])]
 
-    transcripts = SeqIO.index(transcripts, "fastq")
+    transcripts = SeqIO.index(transcripts, "fasta")
 
     largest_cluster = []
     largest_cluster_name = largest_cluster_df["seqid"]
@@ -57,7 +57,7 @@ def filter_corset(transcripts, corset_cluster, out_dir):
 
     print("Kept {} largest transcripts from corset clusters".format(count))
 
-    largest_cluster_df.to_csv(out_dir + base_name_transcripts[0] + ".largest_cluster.csv"), index = False)
+    largest_cluster_df.to_csv(out_dir + base_name_transcripts[0] + ".largest_cluster.csv", index = False)
 
     removed_cluster = []
     removed_cluster_name = removed_cluster_df["seqid"]
@@ -70,7 +70,7 @@ def filter_corset(transcripts, corset_cluster, out_dir):
 
     print("Removed {} redundant transcripts".format(count))
 
-    removed_cluster_df.to_csv(out_dir + base_name_transcripts[0] + ".redundant_cluster.csv"), index = False)
+    removed_cluster_df.to_csv(out_dir + base_name_transcripts[0] + ".redundant_cluster.csv", index = False)
 
 
 
