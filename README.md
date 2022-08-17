@@ -6,22 +6,12 @@ This pipeline, heavily adapted from that created by Yang Lab [[1]](#1), assemble
 **NOTE: for each package listed, the associated version used in the pipeline is given in parentheses. I am not sure if other / newer versions of the packages will work.**
 
 - BLAST+ (v2.13.0)
-- cd-hit (v4.8.1)
 - Corset (v1.09)
-- FastTree (v2.1.11)
 - FastQC (v0.11.9)
-- Gblocks (v0.91b)
-- mafft (v7.490)
-- MCL (v14-137)
-- Pasta (v1.9.0)
-- Phyx (v1.3)
-- Prank (v0.170427)
-- RAxML (v8.2.12)
 - Rcorrector (v1.0.5)
 - Salmon (v0.9.1)
 - SRA Toolkit (v3.0.0)
 - TransDecoder (v5.3.0)
-- TreeShrink (v1.3.9)
 - Trimmomatic (v0.39)
 - Trinity (v2.14.0)
 
