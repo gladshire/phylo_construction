@@ -79,7 +79,7 @@ def get_sra_data(sra_list, threads, out_dir_prefetch, out_dir_fastq):
         print("\nDumping " + sra + ".sra to fastq ...")
         fasterq_cmd = [SRA_TOOLKIT_BIN_PATH + "fasterq-dump",
                        out_dir_prefetch + sra, "--threads",
-                       str(threads), "--outfile", "--split-3",
+                       str(threads), "--progress", "--outfile",
                        out_dir_fastq + out_files[ind]]
         subprocess.run(" ".join(fasterq_cmd), shell=True)
     print("Done.")    

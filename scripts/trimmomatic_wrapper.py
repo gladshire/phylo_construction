@@ -4,7 +4,7 @@ import subprocess
 
 TRIMMOMATIC_LOC = "~/miles/packages/Trimmomatic-0.39"
 TRIMMOMATIC_CMD = "java -jar " + TRIMMOMATIC_LOC + "/dist/jar/trimmomatic-0.39.jar"
-TRUSEQ_ADAPTER = os.path.expanduser("~/miles/packages/phylogenomic_dataset_construction/databases/TruSeq_adapters.fa")
+TRUSEQ_ADAPTER = os.path.expanduser("~/miles/packages/phylogenomic_dataset_construction/databases/trimmomatic_adapters.fasta")
 
 def trimmomatic_pe(pe_fq1, pe_fq2, threads, out_dir):
     trim_setting = "ILLUMINACLIP:" + TRUSEQ_ADAPTER + ":2:30:10 SLIDINGWINDOW:4:5 LEADING:5 TRAILING:5 MINLEN:25"
@@ -43,8 +43,10 @@ def trimmomatic_pe(pe_fq1, pe_fq2, threads, out_dir):
     subprocess.run(" ".join(cmd), shell=True)
 
 def trimmomatic_se(se_fq, threads, out_dir):
-    trim_setting = "ILLUMINACLIP:" + TRUSEQ_ADAPTER + ":2:30:10 SLIDINGWINDOW:4:5 LEADING:5 TRAILING:5 MINLEN:25"
+    #trim_setting = "ILLUMINACLIP:" + TRUSEQ_ADAPTER + ":2:30:10 SLIDINGWINDOW:4:5 LEADING:5 TRAILING:5 MINLEN:25"
 
+
+    trim_setting = "ILLUMINACLIP:" + TRUSEQ_ADAPTER + ":2:30:10 SLIDINGWINDOW:4:20 LEADING:20 TRAILING:20 MINLEN:25"
     if out_dir == ".": out_dir = os.getcwd()
     if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
     if out_dir[-1] != "/": out_dir += "/"

@@ -12,11 +12,11 @@ import subprocess
 from itertools import zip_longest
 from os.path import exists
 
-KRAKEN2_LOC = "~/miles/packages/kraken2-2.1.2/install/"
+KRAKEN2_LOC = "~/miles/packages/kraken2-2.1.2/"
 FILT_LIST = ["bacteria", "archaea", "fungi", "viral", "mitochondrion_and_plastid"]
 
 
-def filter_summary(filt_list, in_file, out_dir):
+def filter_summary(filt_list, in_file, out_dir, paired = False):
     if out_dir == ".": out_dir = os.getcwd()
     if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
     if out_dir[-1] != "/": out_dir += "/"
@@ -26,7 +26,10 @@ def filter_summary(filt_list, in_file, out_dir):
     total_reads_removed = 0
     total_percent_removed = 0
     for i in filt_list:
-        curr_rep = open(out_dir + in_file.split("/")[-1].split(".")[0][:-2:] + "." + i + ".report", 'r')
+        if paired == True:
+            curr_rep = open(out_dir + in_file.split("/")[-1].split(".")[0][:-2:] + "." + i + ".report", "r")
+        else:
+            curr_rep = open(out_dir + in_file.split("/")[-1].split(".")[0] + "." + i + ".report", "r")
         lines = curr_rep.readlines()
         reads_removed = int(lines[1].strip().split()[1])
         percent_removed = float(lines[1].strip().split()[0])
@@ -56,16 +59,6 @@ def filter_summary(filt_list, in_file, out_dir):
     print("\n  Total reads removed: " + str(total_reads_removed) + " (" + str(round(total_percent_removed, 2)) + "%)")
     print("  Leaving: " + str(total_reads - total_reads_removed) + " (" + str(round(100.0 - total_percent_removed, 2)) + "%) reads\n")
      
-        
-def gzip_filtered(out_dir, filtered_file, threads):
-    if out_dir == ".": out_dir = os.getcwd()
-    if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
-    if out_dir[-1] != "/": out_dir += "/"
-
-    file_name = out_dir + filtered_file.split("/")[-1].split(".")[0] + ".filt.fq"
-    print("Compressing filtered file...")
-    subprocess.run(["pigz", "-p" + str(threads), file_name], shell=True)
-        
 
 def grouper(iterable, n, fillvalue=None):
     args = [iter(iterable)] * n
@@ -81,7 +74,7 @@ def kraken_filter_se(db, in_file, threads, out_dir, confidence=0.2):
         in_file = out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq"
     out_file = "temp.fq"
     cmd = [KRAKEN2_LOC + "kraken2", "--threads", str(threads), "--unclassified-out",
-           out_dir + out_file, "--db", db, in_file, "--report",
+           out_dir + out_file, "--db", db, in_file, "--output", "-", "--report",
            out_dir + in_file.split("/")[-1].split(".")[0] + "." + db.split("/")[-1] + ".report"]
     mem_available = psutil.virtual_memory()[1]
     
@@ -93,7 +86,6 @@ def kraken_filter_se(db, in_file, threads, out_dir, confidence=0.2):
         print("Switching to slower memory-mapping mode...")
         cmd.append("--memory-mapping")
     
-    print(" ".join(cmd)) 
     subprocess.run(" ".join(cmd), shell=True)
     os.rename(out_dir + "temp.fq", out_dir + in_file.split("/")[-1].split(".")[0] + ".filt.fq")
     
@@ -121,7 +113,6 @@ def kraken_filter_pe(db, in_file1, in_file2, threads, out_dir, confidence=0.2):
         print("Switching to slower memory-mapping mode...")
         cmd.append("--memory-mapping")
 
-    print(" ".join(cmd))
     subprocess.run(" ".join(cmd), shell=True)
     os.rename(out_dir + "temp_1.fq", out_dir + in_file1.split("/")[-1].split(".")[0] + ".filt.fq")
     os.rename(out_dir + "temp_2.fq", out_dir + in_file2.split("/")[-1].split(".")[0] + ".filt.fq")
@@ -141,7 +132,8 @@ if __name__ == "__main__":
                              in_file = sys.argv[1],
                              threads = sys.argv[2],
                              out_dir = sys.argv[3])
-        filter_summary(FILT_LIST, in_file = sys.argv[1], out_dir = sys.argv[3])
+        filter_summary(FILT_LIST, in_file = sys.argv[1], out_dir = sys.argv[3],
+                       paired = False)
     elif len(sys.argv) == 5:
         file_path_1, file_name_1 = os.path.split(sys.argv[1])
         file_path_2, file_name_2 = os.path.split(sys.argv[2])
@@ -159,7 +151,8 @@ if __name__ == "__main__":
                              in_file2 = sys.argv[2],
                              threads = sys.argv[3],
                              out_dir = sys.argv[4])
-        filter_summary(FILT_LIST, in_file = sys.argv[1], out_dir = sys.argv[3])
+        filter_summary(FILT_LIST, in_file = sys.argv[1], out_dir = sys.argv[3],
+                       paired = True)
     else:
         print("Usage:")
         print("For single-end reads: python3 filter_seqs.py fq_file threads output_directory")
