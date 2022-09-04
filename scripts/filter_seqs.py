@@ -13,7 +13,7 @@ from itertools import zip_longest
 from os.path import exists
 
 KRAKEN2_LOC = "~/miles/packages/kraken2-2.1.2/"
-FILT_LIST = ["bacteria", "archaea", "fungi", "viral", "mitochondrion_and_plastid"]
+FILT_LIST = ["bacteria", "archaea", "fungi", "viral", "plant", "mitochondrion_and_plastid"]
 
 
 def filter_summary(filt_list, in_file, out_dir, paired = False):

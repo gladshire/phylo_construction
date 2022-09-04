@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import shutil
 import subprocess
 from Bio import Entrez
 
@@ -82,6 +83,7 @@ def get_sra_data(sra_list, threads, out_dir_prefetch, out_dir_fastq):
                        str(threads), "--progress", "--outfile",
                        out_dir_fastq + out_files[ind]]
         subprocess.run(" ".join(fasterq_cmd), shell=True)
+        shutil.rmtree(out_dir_prefetch + sra)
     print("Done.")    
 
 

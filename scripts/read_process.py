@@ -62,7 +62,8 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         filtered_ses.append(out_dir + out_dir_inter[0] + "/" + base_names_se[file_num] + ".fix.fq")
 
     if remove_inter == True:
-        subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + "*.cor.fq"]).wait()
+        for file_name in base_names_se:
+            subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + file_name + ".cor.fq"]).wait()
 
     # Trim adapter sequences from reads with Trimmomatic
     print("\nTrimming adapter sequences ...\n")
@@ -76,7 +77,8 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         trimmed_ses.append(out_dir + out_dir_inter[1] + "/" + base_names_se[file_num] + ".trim.fq")
 
     if remove_inter == True:
-        shutil.rmtree(out_dir + out_dir_inter[0])
+        for file_name in base_names_se:
+            subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + file_name + ".fix.fq"]).wait()
 
     # Filter undesired genome/transcriptome reads with Kraken2
     print("\nFiltering foreign reads ...\n")
@@ -90,7 +92,8 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         foreign_filt_se_reads.append(out_dir + out_dir_inter[2] + "/" + base_names_se[file_num] + ".filt.fq")
 
     if remove_inter == True:
-        shutil.rmtree(out_dir + out_dir_inter[1])
+        for file_name in base_names_se:
+            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + file_name + ".trim.fq"]).wait()
 
     # Perform quality analysis with FastQC
     print("\nRunning quality analysis ...\n")
@@ -113,8 +116,9 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         filter_overrep.filter_overrep_se(file_for_filt, se_fqc_paths[file_num], out_dir + out_dir_inter[4])
 
     if remove_inter == True:
-        for i in [2, 3]:
-            shutil.rmtree(out_dir + out_dir_inter[i])
+        for file_name in base_names_se:
+            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[2] + "/" + file_name + "*"]).wait()
+            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[3] + "/" + file_name + "*"]).wait()
 
     for read_proc_file in os.listdir(out_dir + out_dir_inter[4]):
         subprocess.Popen(["gzip", out_dir + out_dir_inter[4] + "/" + read_proc_file])

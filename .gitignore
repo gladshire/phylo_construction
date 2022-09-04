@@ -2,6 +2,9 @@
 *.fa
 *.fastq
 *.fq
+*.bc
+*.jf_dump
+*.mer_counts
 00-raw_seq_data/
 01-error_correction/
 02-filter_adapter_seq/
