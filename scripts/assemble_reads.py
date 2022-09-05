@@ -4,13 +4,14 @@ import subprocess
 import shutil
 import process_reads
 import trinity_wrapper
+import concat_fasta
 from Bio import Entrez
 
 Entrez.email = "mwoodc2@uic.edu"
 Entrez.api_key = "6512380b5cb6a15be6ef4919564e2e186508"
 
 
-def assemble_trinity(processed_dir, threads, max_memory_gb):
+def assemble_trinity(processed_dir, threads, max_memory_gb, mult_tissue = False):
     curr_dir = os.getcwd()
     if os.path.isabs(curr_dir) == False: curr_dir = os.path.abspath(curr_dir)
     if curr_dir[-1] != "/": curr_dir += "/"
@@ -25,17 +26,25 @@ def assemble_trinity(processed_dir, threads, max_memory_gb):
         file_comps = filename.split(".")
         file_sra = filename.split("_")[0]
         layout = process_reads.get_layout(file_sra)
-        if layout == "SINGLE":
-            cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + filename, str(threads),
-                        str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
-            subprocess.run(" ".join(cmd_trin), shell = True)
-        elif layout == "PAIRED":
-            pe_file_1 = file_comps[0][0:-1:] + "1." + ".".join(file_comps[1::])
-            pe_file_2 = file_comps[0][0:-1:] + "2." + ".".join(file_comps[1::])
-
-            cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + pe_file_1, processed_dir + pe_file_2,
+        if mult_tissue == True:
+            org_name = file_comps[0].split("_")[2::].join("_")
+            files_in = [fq for fq in os.listdir(processed_dir) if org_name in fq]
+            concat_fasta.assemble_file(files_in, org_name + "_comb.fastq", curr_dir + "05-filter_over_represented")
+            cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + org_name + "_comb.fastq",
                         str(threads), str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
-            subprocess.run(" ".join(cmd_trin), shell = True)
+            subprocess.Popen(" ".join(cmd_trin), shell = True).wait()
+        elif mult_tissue == False:
+            if layout == "SINGLE":
+                cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + filename, str(threads),
+                            str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
+                subprocess.Popen(" ".join(cmd_trin), shell = True).wait()
+            elif layout == "PAIRED":
+                pe_file_1 = file_comps[0][0:-1:] + "1." + ".".join(file_comps[1::])
+                pe_file_2 = file_comps[0][0:-1:] + "2." + ".".join(file_comps[1::])
+
+                cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + pe_file_1, processed_dir + pe_file_2,
+                            str(threads), str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
+                subprocess.Popen(" ".join(cmd_trin), shell = True).wait()
 
 
 if __name__ == "__main__":
@@ -45,6 +54,8 @@ if __name__ == "__main__":
 
     if len(sys.argv) == 3:
         assemble_trinity(curr_dir + "05-filter_over_represented/", sys.argv[1], sys.argv[2])
+    elif len(sys.argv) == 4 and "mult-tissue" in sys.argv:
+        assemble_trinity(curr_dir + "05-filter_over_represented/", sys.argv[1], sys.argv[2], mult_tissue = True)
     else:
         print("Usage:")
-        print("python3 assemble_reads.py threads max_memory_GB")
+        print("python3 assemble_reads.py threads max_memory_GB [optional:mult-tissue]")

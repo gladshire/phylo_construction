@@ -48,11 +48,16 @@ def trinity_se(se_fq, threads, max_memory_gb, strand, out_dir):
     else:
         stranded = ""
 
+    if "comb" in assembly_base:
+        run_paired = "--run_as_paired"
+    else:
+        run_paired = ""
+
     print(out_dir)
 
     cmd = [TRINITY_CMD, "--seqType", "fq", "--single", se_fq, "--max_memory",
            str(max_memory_gb) + "G", "--CPU", str(threads), "--bflyCalculateCPU",
-           "--full_cleanup", "--no_normalize_reads", stranded, "--output",
+           "--full_cleanup", "--no_normalize_reads", run_paired, stranded, "--output",
            out_dir + assembly_base + ".trinity"]
     subprocess.run(" ".join(cmd), shell=True)
 

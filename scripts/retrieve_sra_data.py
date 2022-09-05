@@ -63,6 +63,11 @@ def get_sra_data(sra_list, threads, out_dir_prefetch, out_dir_fastq):
         taxon_id = get_tax_id(sra)
         organism = get_org(sra)
         out_files.append(sra + "_" + taxon_id + "_" + organism.lower().replace(" ", "_") + ".fastq")
+        if os.path.exists(out_dir_fastq + out_files[-1]) or\
+           (os.path.exists(out_dir_fastq + out_files[-1][:-6:] + "_1" + out_files[-1][-6::]) and\
+            os.path.exists(out_dir_fastq + out_files[-1][:-6:] + "_2" + out_files[-1][-6::])):
+            print("FastQ file{s} found for " + sra + ": " + out_files[-1] + " ...")
+            continue
         if os.path.exists(out_dir_prefetch + sra):
             print("SRA file found: " + sra + ".sra")
             continue
