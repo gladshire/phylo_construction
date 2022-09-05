@@ -49,9 +49,8 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         print("Correcting: " + os.path.split(file_name)[-1])
         rcorrector_wrapper.rcorrector_se(file_name, threads, out_dir + out_dir_inter[0])
         corrected_ses.append(out_dir + out_dir_inter[0] + "/" +  base_names_se[file_num] + ".cor.fq")
-
-    if remove_inter == True:
-        shutil.rmtree(out_dir + "00-raw_seq_data")
+        if remove_inter == True:
+            subprocess.Popen(["rm", out_dir + "00-raw_seq_data/" + file_name]).wait()
 
     # Remove unfixable errors found by Rcorrector
     print("\nRemoving unfixable error reads ...\n")
@@ -60,10 +59,8 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         print("Filtering: " + os.path.split(file_cor)[-1])
         filter_unfixable.filter_unfix_se(file_cor, out_dir + out_dir_inter[0])
         filtered_ses.append(out_dir + out_dir_inter[0] + "/" + base_names_se[file_num] + ".fix.fq")
-
-    if remove_inter == True:
-        for file_name in base_names_se:
-            subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + file_name + ".cor.fq"]).wait()
+        if remove_inter == True:
+            subprocess.Popen(["rm", out_dir_inter[0] + "/" + base_names_se[file_num] + ".cor.fq"])
 
     # Trim adapter sequences from reads with Trimmomatic
     print("\nTrimming adapter sequences ...\n")
@@ -75,10 +72,8 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         print("Trimming: " + os.path.split(file_filt)[-1])
         trimmomatic_wrapper.trimmomatic_se(file_filt, threads, out_dir + out_dir_inter[1])
         trimmed_ses.append(out_dir + out_dir_inter[1] + "/" + base_names_se[file_num] + ".trim.fq")
-
-    if remove_inter == True:
-        for file_name in base_names_se:
-            subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + file_name + ".fix.fq"]).wait()
+        if remove_inter == True:
+            subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + base_names_se[file_num] + ".fix.fq"]).wait()
 
     # Filter undesired genome/transcriptome reads with Kraken2
     print("\nFiltering foreign reads ...\n")
@@ -90,10 +85,8 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         print("Filtering: " + os.path.split(file_trim)[-1])
         subprocess.run(["python3", "filter_seqs.py", file_trim, threads, out_dir + "/" +  out_dir_inter[2]])
         foreign_filt_se_reads.append(out_dir + out_dir_inter[2] + "/" + base_names_se[file_num] + ".filt.fq")
-
-    if remove_inter == True:
-        for file_name in base_names_se:
-            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + file_name + ".trim.fq"]).wait()
+        if remove_inter == True:
+            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + base_names_se[file_num] + ".trim.fq"]).wait()
 
     # Perform quality analysis with FastQC
     print("\nRunning quality analysis ...\n")
@@ -114,11 +107,9 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
     for file_num, file_for_filt in enumerate(foreign_filt_se_reads):
         print("Filtering: " + os.path.split(file_for_filt)[-1])
         filter_overrep.filter_overrep_se(file_for_filt, se_fqc_paths[file_num], out_dir + out_dir_inter[4])
-
-    if remove_inter == True:
-        for file_name in base_names_se:
-            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[2] + "/" + file_name + "*"]).wait()
-            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[3] + "/" + file_name + "*"]).wait()
+        if remove_inter == True:
+            subprocess.Popen(["rm", out_dir + out_dir_inter[2] + "/" + base_names_se[file_num] + "*"]).wait()
+            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[3] + "/" + base_names_se[file_num] + "*"]).wait()
 
     for read_proc_file in os.listdir(out_dir + out_dir_inter[4]):
         subprocess.Popen(["gzip", out_dir + out_dir_inter[4] + "/" + read_proc_file])
@@ -185,9 +176,9 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
         rcorrector_wrapper.rcorrector_pe(pe_fq1_files[i], pe_fq2_files[i], threads, out_dir + out_dir_inter[0])
         corrected_pes_1.append(out_dir + out_dir_inter[0] + "/" + base_names_pe_1[i] + ".cor.fq")
         corrected_pes_2.append(out_dir + out_dir_inter[0] + "/" + base_names_pe_2[i] + ".cor.fq")
-
-    if remove_inter == True:
-        shutil.rmtree(out_dir + "00-raw_seq_data")
+        if remove_inter == True:
+            subprocess.Popen(["rm", out_dir + "00-raw_seq_data/" + base_names_pe_1[i] + ".fastq"])
+            subprocess.Popen(["rm", out_dir + "00-raw_seq_data/" + base_names_pe_2[i] + ".fastq"])
 
     # Remove unfixable errors found by Rcorrector
     print("\nRemoving unfixable error reads ...\n")
@@ -200,9 +191,9 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
         filter_unfixable.filter_unfix_pe(corrected_pes_1[i], corrected_pes_2[i], out_dir + out_dir_inter[0])
         filtered_pes_1.append(out_dir + out_dir_inter[0] + "/" + base_names_pe_1[i] + ".fix.fq")
         filtered_pes_2.append(out_dir + out_dir_inter[0] + "/" + base_names_pe_2[i] + ".fix.fq")
-
-    if remove_inter == True:
-        subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + "*.cor.fq"]).wait()
+        if remove_inter == True:
+            subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + base_names_pe_1[i] + ".cor.fq"])
+            subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + base_names_pe_2[i] + ".cor.fq"])
 
     # Trim adapter sequences from reads with Trimmomatic
     print("\nTrimming adapter sequences ...\n")
@@ -218,9 +209,9 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
         trimmomatic_wrapper.trimmomatic_pe(filtered_pes_1[i], filtered_pes_2[i], threads, out_dir + out_dir_inter[1])
         trimmed_pes_1.append(out_dir + out_dir_inter[1] + "/" + base_names_pe_1[i] + ".paired.trim.fq")
         trimmed_pes_2.append(out_dir + out_dir_inter[1] + "/" + base_names_pe_2[i] + ".paired.trim.fq")
-
-    if remove_inter == True:
-        shutil.rmtree(out_dir + out_dir_inter[0])
+        if remove_inter == True:
+            subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + base_names_pe_1[i] + ".fix.fq"])
+            subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + base_names_pe_2[i] + ".fix.fq"])
     
     # Filter undesired genome/transcriptome reads with Kraken2
     print("\nFiltering foreign reads ...\n")
@@ -236,9 +227,9 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
         subprocess.run(["python3", "filter_seqs.py", trimmed_pes_1[i], trimmed_pes_2[i], threads, out_dir + out_dir_inter[2]])
         foreign_filt_pes_1.append(out_dir + out_dir_inter[2] + "/" + base_names_pe_1[i] + ".filt.fq")
         foreign_filt_pes_2.append(out_dir + out_dir_inter[2] + "/" + base_names_pe_2[i] + ".filt.fq")
-
-    if remove_inter == True:
-        shutil.rmtree(out_dir + out_dir_inter[1])
+        if remove_inter == True:
+            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + base_names_pe_1[i] + ".trim.fq"])
+            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + base_names_pe_2[i] + ".trim.fq"])
 
     # Perform quality analysis with FastQC
     print("\nRunning quality analysis ...\n")
@@ -265,10 +256,11 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
         print(os.path.split(foreign_filt_pes_1[i])[-1])
         print(os.path.split(foreign_filt_pes_2[i])[-1])
         filter_overrep.filter_overrep_pe(foreign_filt_pes_1[i], foreign_filt_pes_2[i], pe_fqc1_paths[i], pe_fqc2_paths[i], out_dir + out_dir_inter[4])
-
-    if remove_inter == True:
-        for i in [2, 3]:
-            shutil.rmtree(out_dir + out_dir_inter[i])
+        if remove_inter == True:
+            subprocess.Popen(["rm", out_dir + out_dir_inter[2] + "/" + base_name_pe_1[i] + "*"])
+            subprocess.Popen(["rm", out_dir + out_dir_inter[2] + "/" + base_name_pe_2[i] + "*"])
+            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[3] + "/" + base_name_pe_1[i] + "*"])
+            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[3] + "/" + base_name_pe_2[i] + "*"])
 
     for read_proc_file in os.listdir(out_dir + out_dir_inter[4]):
         subprocess.Popen(["gzip", out_dir + out_dir_inter[4] + "/" + read_proc_file])
