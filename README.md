@@ -73,7 +73,7 @@ With a reference proteome ready, simply run the **post_assembly.py** script:
 ```
 python3 post_assembly.py proteome_reference.fasta threads
 ```
-
+This command will handle all the post-processing steps listed above and generate the final coding sequences output for each assembly, all of which can be found in the **"09-translate"** directory upon completion.
 
 ## References
 <a id= "1">[1]</a>  Yang Lab (2021) Phylogenomic Dataset Construction. https://bitbucket.org/yanglab/phylogenomic_dataset_construction.git
