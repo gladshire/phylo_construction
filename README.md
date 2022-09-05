@@ -47,8 +47,14 @@ This will perform all the above-listed processing steps on all SRA runs specifie
 ### 2. Assembly with Trinity <a name="trinity"></a>
 
 Following initial processing of the reads, Trinity will be used to generate *de novo* transcriptomes for each SRA run. This process is handled by the **assemble_reads.py** script, which takes as its arguments the number of threads and the maximum amount of RAM (in gigabytes) that may be dedicated towards the Trinity assemblies. To perform this step, simply run the script:
+
+To assemble from a single SRA run:
 ```
 python3 assemble_reads.py num_threads max_memory_GB
+```
+To assemble from several SRA runs (such as from multiple differing tissue samples):
+```
+python3 assembly_reads.py num_threads max_memory_GB mult_samples
 ```
 This will initiate Trinity assembly for all processed transcripts in series. Note that this step can be quite time consuming, depending on the size and complexity of the dataset in question.
 
@@ -73,7 +79,7 @@ With a reference proteome ready, simply run the **post_assembly.py** script:
 ```
 python3 post_assembly.py proteome_reference.fasta threads
 ```
-
+This command will handle all the post-processing steps listed above and generate the final coding sequences output for each assembly, all of which can be found in the **"09-translate"** directory upon completion.
 
 ## References
 <a id= "1">[1]</a>  Yang Lab (2021) Phylogenomic Dataset Construction. https://bitbucket.org/yanglab/phylogenomic_dataset_construction.git
