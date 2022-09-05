@@ -47,8 +47,14 @@ This will perform all the above-listed processing steps on all SRA runs specifie
 ### 2. Assembly with Trinity <a name="trinity"></a>
 
 Following initial processing of the reads, Trinity will be used to generate *de novo* transcriptomes for each SRA run. This process is handled by the **assemble_reads.py** script, which takes as its arguments the number of threads and the maximum amount of RAM (in gigabytes) that may be dedicated towards the Trinity assemblies. To perform this step, simply run the script:
+
+To assemble from a single SRA run:
 ```
 python3 assemble_reads.py num_threads max_memory_GB
+```
+To assemble from several SRA runs (such as from multiple differing tissue samples):
+```
+python3 assembly_reads.py num_threads max_memory_GB mult_samples
 ```
 This will initiate Trinity assembly for all processed transcripts in series. Note that this step can be quite time consuming, depending on the size and complexity of the dataset in question.
 
