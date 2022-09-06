@@ -14,7 +14,6 @@ def rcorrector_se(se_fq, threads, out_dir):
     se_file = str(file_se)
     corr_name = se_file.split(".")[0] + ".cor.fq"
    
-    print(out_dir + corr_name) 
     if os.path.exists(out_dir + corr_name):
         print("Corrected file found for: " + os.path.split(se_fq)[-1])
         return

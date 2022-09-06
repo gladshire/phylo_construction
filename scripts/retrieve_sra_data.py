@@ -66,7 +66,6 @@ def get_sra_data(sra_list, threads, out_dir_prefetch, out_dir_fastq):
         if os.path.exists(out_dir_fastq + out_files[-1]) or\
            (os.path.exists(out_dir_fastq + out_files[-1][:-6:] + "_1" + out_files[-1][-6::]) and\
             os.path.exists(out_dir_fastq + out_files[-1][:-6:] + "_2" + out_files[-1][-6::])):
-            print("FastQ file{s} found for " + sra + ": " + out_files[-1] + " ...")
             continue
         if os.path.exists(out_dir_prefetch + sra):
             print("SRA file found: " + sra + ".sra")

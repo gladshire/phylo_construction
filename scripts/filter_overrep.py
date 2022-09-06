@@ -103,7 +103,8 @@ def filter_overrep_se(se_fq, se_fqc, out_dir):
     se_fq_name = str(file_se)
     base_name_se = se_fq_name.split(".")[0] + ".overrep_filtered.fq"
 
-    if os.path.exists(out_dir + base_name_se):
+    if os.path.exists(out_dir + base_name_se) or\
+       os.path.exists(out_dir + base_name_se + ".gz"):
         print("Filtered file found for: " + os.path.split(se_fq)[-1])
         return
 

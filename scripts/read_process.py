@@ -50,7 +50,7 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         rcorrector_wrapper.rcorrector_se(file_name, threads, out_dir + out_dir_inter[0])
         corrected_ses.append(out_dir + out_dir_inter[0] + "/" +  base_names_se[file_num] + ".cor.fq")
         if remove_inter == True:
-            subprocess.Popen(["rm", out_dir + "00-raw_seq_data/" + file_name]).wait()
+            subprocess.Popen(["rm", out_dir + "00-raw_seq_data/fasterq_dump/" + file_name]).wait()
 
     # Remove unfixable errors found by Rcorrector
     print("\nRemoving unfixable error reads ...\n")
@@ -60,7 +60,7 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         filter_unfixable.filter_unfix_se(file_cor, out_dir + out_dir_inter[0])
         filtered_ses.append(out_dir + out_dir_inter[0] + "/" + base_names_se[file_num] + ".fix.fq")
         if remove_inter == True:
-            subprocess.Popen(["rm", out_dir_inter[0] + "/" + base_names_se[file_num] + ".cor.fq"])
+            subprocess.Popen(["rm", out_dir + out_dir_inter[0] + "/" + base_names_se[file_num] + ".cor.fq"])
 
     # Trim adapter sequences from reads with Trimmomatic
     print("\nTrimming adapter sequences ...\n")
@@ -177,8 +177,8 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
         corrected_pes_1.append(out_dir + out_dir_inter[0] + "/" + base_names_pe_1[i] + ".cor.fq")
         corrected_pes_2.append(out_dir + out_dir_inter[0] + "/" + base_names_pe_2[i] + ".cor.fq")
         if remove_inter == True:
-            subprocess.Popen(["rm", out_dir + "00-raw_seq_data/" + base_names_pe_1[i] + ".fastq"])
-            subprocess.Popen(["rm", out_dir + "00-raw_seq_data/" + base_names_pe_2[i] + ".fastq"])
+            subprocess.Popen(["rm", out_dir + "00-raw_seq_data/fasterq_dump/" + base_names_pe_1[i] + ".fastq"])
+            subprocess.Popen(["rm", out_dir + "00-raw_seq_data/fasterq_dump/" + base_names_pe_2[i] + ".fastq"])
 
     # Remove unfixable errors found by Rcorrector
     print("\nRemoving unfixable error reads ...\n")

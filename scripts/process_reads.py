@@ -36,7 +36,6 @@ def get_layout(file_sra):
     layout_mat = layout_pat.search(layout_fld_sub)
     layout = layout_fld_sub[layout_mat.start():layout_mat.end() - 1]
     if "SINGLE" in layout:
-        print("FOUND SINGLE")
         return "SINGLE"
     elif "PAIRED" in layout:
         return "PAIRED"
