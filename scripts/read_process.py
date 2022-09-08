@@ -9,6 +9,7 @@ import filter_seqs
 import fastqc_wrapper
 import filter_overrep
 
+
 def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
     # Determine where to store output
     if out_dir != None:
@@ -86,7 +87,7 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         subprocess.run(["python3", "filter_seqs.py", file_trim, threads, out_dir + "/" +  out_dir_inter[2]])
         foreign_filt_se_reads.append(out_dir + out_dir_inter[2] + "/" + base_names_se[file_num] + ".filt.fq")
         if remove_inter == True:
-            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + base_names_se[file_num] + ".trim.fq"]).wait()
+            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + base_names_se[file_num] + ".paired.trim.fq"]).wait()
 
     # Perform quality analysis with FastQC
     print("\nRunning quality analysis ...\n")
@@ -228,8 +229,8 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
         foreign_filt_pes_1.append(out_dir + out_dir_inter[2] + "/" + base_names_pe_1[i] + ".filt.fq")
         foreign_filt_pes_2.append(out_dir + out_dir_inter[2] + "/" + base_names_pe_2[i] + ".filt.fq")
         if remove_inter == True:
-            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + base_names_pe_1[i] + ".trim.fq"])
-            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + base_names_pe_2[i] + ".trim.fq"])
+            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + base_names_pe_1[i] + ".paired.trim.fq"])
+            subprocess.Popen(["rm", out_dir + out_dir_inter[1] + "/" + base_names_pe_2[i] + ".paired.trim.fq"])
 
     # Perform quality analysis with FastQC
     print("\nRunning quality analysis ...\n")
@@ -257,10 +258,10 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
         print(os.path.split(foreign_filt_pes_2[i])[-1])
         filter_overrep.filter_overrep_pe(foreign_filt_pes_1[i], foreign_filt_pes_2[i], pe_fqc1_paths[i], pe_fqc2_paths[i], out_dir + out_dir_inter[4])
         if remove_inter == True:
-            subprocess.Popen(["rm", out_dir + out_dir_inter[2] + "/" + base_name_pe_1[i] + "*"])
-            subprocess.Popen(["rm", out_dir + out_dir_inter[2] + "/" + base_name_pe_2[i] + "*"])
-            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[3] + "/" + base_name_pe_1[i] + "*"])
-            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[3] + "/" + base_name_pe_2[i] + "*"])
+            subprocess.Popen(["rm", out_dir + out_dir_inter[2] + "/" + base_names_pe_1[i] + "*"])
+            subprocess.Popen(["rm", out_dir + out_dir_inter[2] + "/" + base_names_pe_2[i] + "*"])
+            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[3] + "/" + base_names_pe_1[i] + "*"])
+            subprocess.Popen(["rm", "-rf", out_dir + out_dir_inter[3] + "/" + base_names_pe_2[i] + "*"])
 
     for read_proc_file in os.listdir(out_dir + out_dir_inter[4]):
         subprocess.Popen(["gzip", out_dir + out_dir_inter[4] + "/" + read_proc_file])
@@ -302,8 +303,5 @@ if __name__ == "__main__":
         print("For single-end reads: python3 read_process.py se_fastq_list threads remove_intermediates[rem-inter/keep-inter]")
         print("For paired-end reads: python3 read_process.py pe_fastq_1_list pe_fastq_2_list threads remove_intermediates[rem-inter/keep-inter]")
         sys.exit()
-    for read_proc_file in os.listdir(out_dir + out_dir_inter[4]):
-        subprocess.Popen(["pigz", "-p", threads,
-                          out_dir + out_dir_inter[4] + "/" + read_proc_file])
 
 

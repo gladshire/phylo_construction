@@ -21,15 +21,18 @@ def assemble_trinity(processed_dir, threads, max_memory_gb, mult_samples = False
 
     files_skip = []
     for filename in os.listdir(processed_dir):
-        if filename in files_skip:
+        if filename in files_skip or "comb" in filename:
             continue
         file_comps = filename.split(".")
-        file_sra = filename.split("_")[0]
+        file_sra = file_comps[0].split("_")[0]
         layout = process_reads.get_layout(file_sra)
         if mult_samples == True:
-            org_name = file_comps[0].split("_")[2::].join("_")
-            files_in = [fq for fq in os.listdir(processed_dir) if org_name in fq]
-            concat_fasta.assemble_file(files_in, org_name + "_comb.fastq", curr_dir + "05-filter_over_represented")
+            org_name = "_".join(file_comps[0].split("_")[2:-1:])
+            files_in = [processed_dir + fq for fq in os.listdir(processed_dir) if org_name in fq]
+            
+            concat_fasta.assemble_file(fasta_files = files_in,
+                                       out_file = org_name + "_comb.fastq",
+                                       out_dir = curr_dir + "05-filter_over_represented")
             cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + org_name + "_comb.fastq",
                         str(threads), str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
             subprocess.Popen(" ".join(cmd_trin), shell = True).wait()

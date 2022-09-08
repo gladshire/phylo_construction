@@ -82,7 +82,7 @@ if __name__ == "__main__":
         if out_dir[-1] != "/": out_dir += "/"
 
         # Download all SRA fastq files
-        dnld_sra_data(threads, out_dir)
+        # dnld_sra_data(threads, out_dir)
 
         # Perform read processing on all SRA fastq files
         if rm_inter == "rem-inter":
