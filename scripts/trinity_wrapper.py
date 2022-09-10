@@ -40,7 +40,7 @@ def trinity_se(se_fq, threads, max_memory_gb, strand, out_dir):
     assembly_base = assembly_file.split(".")[0]
    
     if os.path.exists(out_dir + assembly_base + ".trinity.Trinity.fasta"):
-        print("Trinity file found for: " + se_fq)
+        print("Trinity file found for: " + os.path.split(se_fq)[-1])
         return
 
     if strand == "stranded":

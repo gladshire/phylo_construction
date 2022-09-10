@@ -29,13 +29,15 @@ def assemble_trinity(processed_dir, threads, max_memory_gb, mult_samples = False
         if mult_samples == True:
             org_name = "_".join(file_comps[0].split("_")[2:-1:])
             files_in = [processed_dir + fq for fq in os.listdir(processed_dir) if org_name in fq]
-            
+            print("Combining reads for: {} ...".format(org_name))
             concat_fasta.assemble_file(fasta_files = files_in,
                                        out_file = org_name + "_comb.fastq",
                                        out_dir = curr_dir + "05-filter_over_represented")
             cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + org_name + "_comb.fastq",
                         str(threads), str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
             subprocess.Popen(" ".join(cmd_trin), shell = True).wait()
+            for fq in files_in:
+                files_skip.append(os.path.split(fq)[1])
         elif mult_samples == False:
             if layout == "SINGLE":
                 cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + filename, str(threads),
@@ -48,6 +50,8 @@ def assemble_trinity(processed_dir, threads, max_memory_gb, mult_samples = False
                 cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + pe_file_1, processed_dir + pe_file_2,
                             str(threads), str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
                 subprocess.Popen(" ".join(cmd_trin), shell = True).wait()
+                files_skip.append(pe_file_1)
+                files_skip.append(pe_file_2)
 
 
 if __name__ == "__main__":
