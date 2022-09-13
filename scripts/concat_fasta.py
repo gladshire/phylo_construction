@@ -16,3 +16,6 @@ def assemble_file(fasta_files, out_file, out_dir):
             fast_out.write(curr_in_str)
             curr_in.close()
 
+
+if __name__ == "__main__":
+    assemble_file(sys.argv[:-2:], sys.argv[-2], sys.argv[-1])
