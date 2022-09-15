@@ -9,7 +9,8 @@ def assemble_file(files_concat, out_dir, out_file):
 
     output_file = out_dir + out_file
     cmd = ["cat"] + files_concat + [">", output_file]
-    subprocess.Popen(cmd, shell = True).wait()
+    print(cmd)
+    subprocess.Popen(" ".join(cmd), shell = True).wait()
 
 
 if __name__ == "__main__":
