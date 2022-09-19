@@ -74,24 +74,30 @@ def process_fastq_dumps(fastq_dir, out_dir, threads, remove_inter):
                                  remove_inter = remove_inter)
 
 if __name__ == "__main__":
-    if len(sys.argv) == 3:
+    if len(sys.argv) == 2:
         threads = sys.argv[1]
         out_dir = os.getcwd()
-        rm_inter = sys.argv[2]
+        if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
+        if out_dir[-1] != "/": out_dir += "/"
+
+        dnld_sra_data(threads, out_dir)
+
+        process_fastq_dumps(out_dir + "00-raw_seq_data/fasterq_dump/", out_dir,
+                            threads, remove_inter = False)
+    elif len(sys.argv) == 3 and "rem-inter" in sys.argv:
+        threads = sys.argv[1]
+        out_dir = os.getcwd()
         if os.path.isabs(out_dir) == False: out_dir = os.path.abspath(out_dir)
         if out_dir[-1] != "/": out_dir += "/"
 
         # Download all SRA fastq files
-        # dnld_sra_data(threads, out_dir)
+        dnld_sra_data(threads, out_dir)
 
         # Perform read processing on all SRA fastq files
-        if rm_inter == "rem-inter":
-            process_fastq_dumps(out_dir + "00-raw_seq_data/fasterq_dump/", out_dir, threads, remove_inter = True)
-        elif rm_inter == "keep-inter":
-            process_fastq_dumps(out_dir + "00-raw_seq_data/fasterq_dump/", out_dir, threads, remove_inter = False)
- 
+        process_fastq_dumps(out_dir + "00-raw_seq_data/fasterq_dump/", out_dir,
+                            threads, remove_inter = True)
     else:
         print("Usage:")
-        print("python3 process_reads.py threads remove_intermediates[rem-inter/keep-inter]")
+        print("python3 process_reads.py threads [optional:rem-inter]")
         sys.exit()  
 
