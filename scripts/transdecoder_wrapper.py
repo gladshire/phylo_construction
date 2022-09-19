@@ -102,8 +102,8 @@ def run_transdecoder_blastp(transcripts, threads, strand, out_dir):
             os.chdir(out_dir)
             subprocess.Popen(" ".join(cmd), shell = True).wait()
 
-    shorten_fasta_names(out_dir + outpep, out_dir + taxon_id + ".pep.fa", taxon_id)
-    shorten_fasta_names(out_dir + outcds, out_dir + taxon_id + ".cds.fa", taxon_id)
+    shorten_fasta_names(out_dir + outpep, out_dir + taxon_id + "_" + org_name + ".pep.fa", taxon_id)
+    shorten_fasta_names(out_dir + outcds, out_dir + taxon_id + "_" + org_name + ".cds.fa", taxon_id)
 
 
 
@@ -115,7 +115,8 @@ if __name__ == "__main__":
         out_dir = sys.argv[4]
         path_transcript, file_transcript = os.path.split(transcripts)
         base_name_transcripts = file_transcript.split(".")
-        taxon_id = base_name_transcripts[0].split("_")[1]
+        taxon_id = base_name_transcripts[0].split("_")[0]
+        org_name = "_".join(base_name_transcripts[0].split("_")[:-1:])
 
         blastpout = base_name_transcripts[0] + ".blastp.outfmt6"
         outcds = file_transcript + ".transdecoder.cds"

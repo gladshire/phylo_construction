@@ -4,7 +4,7 @@ import subprocess
 
 
 SALMON_LOC = "~/miles/packages/Salmon-latest_linux_x86_64/bin/"
-SALMON_CMD = SALMON_LOC + "salmon-0.9.1"
+SALMON_CMD = SALMON_LOC + "salmon"
 
 CORSET_LOC = "~/miles/packages/corset-1.09-linux64/"
 CORSET_CMD = CORSET_LOC + "corset"

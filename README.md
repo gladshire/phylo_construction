@@ -9,7 +9,7 @@ This pipeline, heavily adapted from that created by Yang Lab [[1]](#1), assemble
 - Corset (v1.09)
 - FastQC (v0.11.9)
 - Rcorrector (v1.0.5)
-- Salmon (v0.9.1)
+- Salmon (v1.9.0)
 - SRA Toolkit (v3.0.0)
 - TransDecoder (v5.3.0)
 - Trimmomatic (v0.39)

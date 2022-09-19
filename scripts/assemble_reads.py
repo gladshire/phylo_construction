@@ -27,12 +27,13 @@ def assemble_trinity(processed_dir, threads, max_memory_gb, mult_samples = False
         file_sra = file_comps[0].split("_")[0]
         layout = process_reads.get_layout(file_sra)
         if mult_samples == True:
+            taxon_id = file_comps[0].split("_")[1]
             org_name = "_".join(file_comps[0].split("_")[2:-1:])
             files_in = [processed_dir + fq for fq in os.listdir(processed_dir) if org_name in fq]
             print("Combining reads for: {} ...".format(org_name))
             concat_files.assemble_file(files_concat = files_in,
                                        out_dir = curr_dir + "05-filter_over_represented",
-                                       out_file = org_name + "_comb.fastq")
+                                       out_file = taxon_id + "_" + org_name + "_comb.fastq")
             cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + org_name + "_comb.fastq",
                         str(threads), str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
             subprocess.Popen(" ".join(cmd_trin), shell = True).wait()
