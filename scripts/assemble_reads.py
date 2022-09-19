@@ -4,7 +4,7 @@ import subprocess
 import shutil
 import process_reads
 import trinity_wrapper
-import concat_fasta
+import concat_files
 from Bio import Entrez
 
 Entrez.email = "mwoodc2@uic.edu"
@@ -30,9 +30,9 @@ def assemble_trinity(processed_dir, threads, max_memory_gb, mult_samples = False
             org_name = "_".join(file_comps[0].split("_")[2:-1:])
             files_in = [processed_dir + fq for fq in os.listdir(processed_dir) if org_name in fq]
             print("Combining reads for: {} ...".format(org_name))
-            concat_files.assemble_file(fasta_files = files_in,
-                                       out_file = org_name + "_comb.fastq",
-                                       out_dir = curr_dir + "05-filter_over_represented")
+            concat_files.assemble_file(files_concat = files_in,
+                                       out_dir = curr_dir + "05-filter_over_represented",
+                                       out_file = org_name + "_comb.fastq")
             cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + org_name + "_comb.fastq",
                         str(threads), str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
             subprocess.Popen(" ".join(cmd_trin), shell = True).wait()

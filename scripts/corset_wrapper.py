@@ -22,7 +22,6 @@ def salmon_index(transcript, threads, out_dir):
     if os.path.exists(out_dir + index_name):
         print("Salmon index found for: " + salmon_base_name[0])
         return
-
     salm_cmd = [SALMON_CMD, "index", "-t", transcript, "-i", out_dir + index_name,
                 "--type", "quasi", "-p", str(threads)]
     print(" ".join(salm_cmd))
@@ -37,18 +36,20 @@ def salmon_quant_pe(transcript, index, pe_fq1, pe_fq2, threads, out_dir):
     path_transcript, file_transcript = os.path.split(transcript)
     salmon_base_name = file_transcript.split(".")
 
+    pe_fq1 = " ".join(pe_fq1.split(","))
+    pe_fq2 = " ".join(pe_fq2.split(","))
+
     index_name = salmon_base_name[0] + "_salmon_index"
     quant_name = salmon_base_name[0] + "_salmon_quant"
-
-    x = pe_fq1.replace(",", " ")
-    y = pe_fq2.replace(",", " ")
+    
+    print(pe_fq1)
+    print(pe_fq2)
 
     if os.path.exists(out_dir + quant_name):
         print("Salmon quant found for: " + salmon_base_name[0])
         return
-    
     salm_cmd = [SALMON_CMD, "quant", "-i", out_dir + index_name, "--dumpEq",
-                "--libType", "A", "-p", str(threads), "-1", x, "-2", y, "-o",
+                "--libType", "A", "-p", str(threads), "-1", pe_fq1, "-2", pe_fq2, "-o",
                 out_dir + quant_name]
     print(" ".join(salm_cmd))
     subprocess.Popen(" ".join(salm_cmd), shell = True).wait()
