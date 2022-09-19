@@ -76,6 +76,12 @@ For simple construction of the reference proteome, a script called **concat_fast
 python3 concat_fasta.py [proteome_1.fasta, proteome_2.fasta, ...] output_file_name.fasta output_directory
 ```
 With a reference proteome ready, simply run the **post_assembly.py** script:
+
+To process assemblies from single SRA runs:
+```
+python3 post_assembly.py proteome_reference.fasta threads
+```
+To process assemblies from several SRA runs:
 ```
 python3 post_assembly.py proteome_reference.fasta threads
 ```
