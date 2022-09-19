@@ -42,6 +42,10 @@ Specify the SRA numbers for each run to be retrieved and processed by the pipeli
 ```
 python3 process_reads.py num_threads
 ```
+By default, file outputs from intermediary processing steps will not be removed. To remove them automatically during processing, call the script with the **rem-inter** flag:
+```
+python3 process_reads num_threads rem-inter
+```
 This will perform all the above-listed processing steps on all SRA runs specified in the **sras.txt** file. Once completed, the processed transcript files can be found in the **"05-filter_over_represented"** folder in the current working directory.
 
 ### 2. Assembly with Trinity <a name="trinity"></a>
@@ -73,17 +77,17 @@ With our newly-assembled Trinity transcripts, the next stage is to filter and tr
 
 For simple construction of the reference proteome, a script called **concat_fasta.py** has been provided, and can be executed thus:
 ```
-python3 concat_fasta.py [proteome_1.fasta, proteome_2.fasta, ...] output_file_name.fasta output_directory
+python3 concat_files.py [proteome_1.fasta, proteome_2.fasta, ...] output_directory output_file.fasta
 ```
 With a reference proteome ready, simply run the **post_assembly.py** script:
 
 To process assemblies from single SRA runs:
 ```
-python3 post_assembly.py proteome_reference.fasta threads
+python3 post_assembly.py proteome_reference.fasta num_threads
 ```
 To process assemblies from several SRA runs:
 ```
-python3 post_assembly.py proteome_reference.fasta threads
+python3 post_assembly.py proteome_reference.fasta num_threads
 ```
 This command will handle all the post-processing steps listed above and generate the final coding sequences output for each assembly, all of which can be found in the **"09-translate"** directory upon completion.
 
