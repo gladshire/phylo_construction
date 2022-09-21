@@ -34,7 +34,7 @@ def assemble_trinity(processed_dir, threads, max_memory_gb, mult_samples = False
             concat_files.assemble_file(files_concat = files_in,
                                        out_dir = curr_dir + "05-filter_over_represented",
                                        out_file = taxon_id + "_" + org_name + "_comb.fastq")
-            cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + org_name + "_comb.fastq",
+            cmd_trin = ["python3", "trinity_wrapper.py", processed_dir + taxon_id + "_" + org_name + "_comb.fastq",
                         str(threads), str(max_memory_gb), "non-stranded", curr_dir + "06-trinity_assembly/"]
             subprocess.Popen(" ".join(cmd_trin), shell = True).wait()
             for fq in files_in:

@@ -13,6 +13,7 @@ from itertools import zip_longest
 from os.path import exists
 
 KRAKEN2_LOC = "~/miles/packages/kraken2-2.1.2/"
+KRAKEN2_DB_DIR = "/scratch/kraken2_dbs/"
 FILT_LIST = ["bacteria", "archaea", "fungi", "viral", "plant", "mitochondrion_and_plastid"]
 
 
@@ -128,7 +129,7 @@ if __name__ == "__main__":
             print("Filtered file found for: " + os.path.split(sys.argv[1])[-1])
             sys.exit()
         for i in FILT_LIST:
-            kraken_filter_se(db = "/scratch/kraken2_dbs/" + i,
+            kraken_filter_se(db = KRAKEN2_DB_DIR + i,
                              in_file = sys.argv[1],
                              threads = sys.argv[2],
                              out_dir = sys.argv[3])
@@ -146,7 +147,7 @@ if __name__ == "__main__":
             print(os.path.split(sys.argv[2])[-1])
             sys.exit()
         for i in FILT_LIST:
-            kraken_filter_pe(db = "/scratch/kraken2_dbs/" + i,
+            kraken_filter_pe(db = KRAKEN2_DB_DIR + i,
                              in_file1 = sys.argv[1],
                              in_file2 = sys.argv[2],
                              threads = sys.argv[3],

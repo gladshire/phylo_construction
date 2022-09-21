@@ -17,7 +17,7 @@ def post_assembly(prot_ref, threads, mult_samples = False):
     overrep_dir = out_dir + "05-filter_over_represented/"
     
     # Run chimera detection / removal
-    chim_dir = "07-filter_chimeras"
+    chim_dir = "07-filter_chimera"
     if os.path.exists(out_dir + chim_dir) == False:
         os.mkdir(out_dir + chim_dir)
     
@@ -30,7 +30,7 @@ def post_assembly(prot_ref, threads, mult_samples = False):
         subprocess.Popen(" ".join(chim_cmd), shell = True).wait()
     
     # Run corset, extract representative clusters
-    cors_dir = "08-corset_clusters/"
+    cors_dir = "08-clustering/"
     
     if os.path.exists(out_dir + cors_dir) == False:
         os.mkdir(out_dir + cors_dir)

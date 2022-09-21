@@ -69,21 +69,21 @@ The following steps are performed during transcript filtering and translation:
 3. Filtering of Corset clusters
 4. Translation with Transdecoder
 
-With our newly-assembled Trinity transcripts, the next stage is to filter and translate them. All above steps are handled by the **post_assembly.py** script. The first step here utilizes BLAST along with a reference proteome to identify and remove chimeras from the Trinity transcripts. For the reference proteome, choose several species that are closely related to those being fed through the pipeline. For instance, when passing in several plants from the Caryophyllales family, one may assemble the reference proteome from spinach, beets, and arabidopsis proteomes.
+With our newly-assembled Trinity transcripts, the next stage is to filter and translate them. All above steps are handled by the **post_assemble.py** script. The first step here utilizes BLAST along with a reference proteome to identify and remove chimeras from the Trinity transcripts. For the reference proteome, choose several species that are closely related to those being fed through the pipeline. For instance, when passing in several plants from the Caryophyllales family, one may assemble the reference proteome from spinach, beets, and arabidopsis proteomes.
 
-For simple construction of the reference proteome, a script called **concat_fasta.py** has been provided, and can be executed thus:
+For simple construction of the reference proteome, a script called **concat_files.py** has been provided, and can be executed thus:
 ```
-python3 concat_fasta.py [proteome_1.fasta, proteome_2.fasta, ...] output_file_name.fasta output_directory
+python3 concat_fasta.py [proteome_1.fasta, proteome_2.fasta, ...] output_directory output_file_name.fasta
 ```
-With a reference proteome ready, simply run the **post_assembly.py** script:
+With a reference proteome ready, simply run the **post_assemble.py** script:
 
 To process assemblies from single SRA runs:
 ```
-python3 post_assembly.py proteome_reference.fasta threads
+python3 post_assemble.py proteome_reference.fasta num_threads
 ```
 To process assemblies from several SRA runs:
 ```
-python3 post_assembly.py proteome_reference.fasta threads
+python3 post_assembly.py proteome_reference.fasta num_threads mult_samples
 ```
 This command will handle all the post-processing steps listed above and generate the final coding sequences output for each assembly, all of which can be found in the **"09-translate"** directory upon completion.
 

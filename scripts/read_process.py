@@ -24,7 +24,7 @@ def read_process_se(se_fq_files, threads, out_dir=None, remove_inter=False):
         d = ""
     out_dir_inter[0] = "01-error_correction"
     out_dir_inter[1] = "02-filter_adapter_seq"
-    out_dir_inter[2] = "03-filter_foreign_dna"
+    out_dir_inter[2] = "03-filter_foreign_seq"
     out_dir_inter[3] = "04-quality_control"
     out_dir_inter[4] = "05-filter_over_represented"
     
@@ -131,7 +131,7 @@ def read_process_pe(pe_fq1_files, pe_fq2_files, threads, out_dir=None, remove_in
         d = ""
     out_dir_inter[0] = "01-error_correction"
     out_dir_inter[1] = "02-filter_adapter_seq"
-    out_dir_inter[2] = "03-filter_foreign_dna"
+    out_dir_inter[2] = "03-filter_foreign_seq"
     out_dir_inter[3] = "04-quality_control"
     out_dir_inter[4] = "05-filter_over_represented"
     

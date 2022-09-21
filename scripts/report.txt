@@ -1,0 +1,14 @@
+HistoryId: MCID_6328a8660aaad24c32a4d826
+QueryKey: 10
+ReleaseType: RefSeq
+FileType: TRANS_CDS
+Flat: true
+
+Query title: Select 1 document(s)
+    
+Search results count: 1
+Entries to download: 1
+
+TRANS_CDS files in archive: 1
+Total size (bytes): 12029725
+Total time: 3.69 seconds
