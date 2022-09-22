@@ -3,6 +3,8 @@
 *.fastq
 *.fq
 *.bc
+*.gz
+*.fna
 *.jf_dump
 *.mer_counts
 00-raw_seq_data/
