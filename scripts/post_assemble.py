@@ -50,7 +50,7 @@ def post_assembly(prot_ref, threads, mult_samples = False):
         elif get_layout(curr_sra) == "PAIRED":
             if mult_samples:
                 file_comps = file_overrep.split(".")
-                file_transcript = "_".join(file_comps[0].split("_")[2:4:]) + "_comb.trinity.Trinity.fasta"
+                file_transcript = "_".join(file_comps[0].split("_")[1:4:]) + "_comb.trinity.Trinity.fasta"
                 org_name = "_".join(file_comps[0].split("_")[2:4])
                 files_overrep_1 = [overrep_dir + file1 for file1 in os.listdir(overrep_dir) \
                                    if org_name + "_1" in file1]
